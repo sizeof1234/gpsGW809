@@ -35,16 +35,14 @@ public class CmdUpExgMsgTakeEWayBillAck extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.eWayBillDataSize = this.eWayBillData.length;
+		
 		channelBuffer.writeInt(eWayBillDataSize);
 		channelBuffer.writeBytes(eWayBillData);
 	}
 
 	public int geteWayBillDataSize() {
 		return eWayBillDataSize;
-	}
-
-	public void seteWayBillDataSize(int eWayBillDataSize) {
-		this.eWayBillDataSize = eWayBillDataSize;
 	}
 
 	public byte[] geteWayBillData() {

@@ -132,7 +132,7 @@ public abstract class CmdHead implements ICmd {
 			if (this.encryptFlag == ENCRYPT_FLAG_ENCRYPTED) {
 				this.encryptData(channelBuffer, sIndex, eIndex, encryptKey);
 			}
-			short crc = (short)KKTool.getCRC16(channelBuffer, 0, channelBuffer.writerIndex());
+			short crc = (short)KKTool.getCRC16(channelBuffer, 1, channelBuffer.writerIndex());
 			channelBuffer.writeShort(crc);
 			channelBuffer.writeByte(this.endFlag);
 			return true;

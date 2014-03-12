@@ -1,12 +1,13 @@
 package com.jsecode.cmd.down.req;
 
-import com.jsecode.cmd.CmdHeadSubBizWithoutCar;
-import com.jsecode.cmd.bean.GpsBean;
-import com.jsecode.utils.KKLog;
-import org.jboss.netty.buffer.ChannelBuffer;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.netty.buffer.ChannelBuffer;
+
+import com.jsecode.cmd.CmdHeadSubBizWithCar;
+import com.jsecode.cmd.bean.GpsCmdBean;
+import com.jsecode.utils.KKLog;
 
 /**
  * 
@@ -29,23 +30,23 @@ import java.util.List;
  *    
  *
  */
-public class CmdDownExgMsgHistoryArcossarea extends CmdHeadSubBizWithoutCar {
+public class CmdDownExgMsgHistoryArcossarea extends CmdHeadSubBizWithCar {
 
 	private byte gnssCnt;         		// 数据个数1<=gnssCnt<=5
-	private List <GpsBean> gnssDataList;// 数据部分
-	private GpsBean gnssData;
+	private List <GpsCmdBean> gnssDataList;// 数据部分
+	//private GpsCmdBean gpsData;
 	
 	public CmdDownExgMsgHistoryArcossarea(){
-		gnssDataList = new ArrayList<GpsBean>();
+		gnssDataList = new ArrayList<GpsCmdBean>();
 	}
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
 		this.gnssCnt = channelBuffer.readByte();
 		//根据gnssCnt 个数，判断数据体列表个数，放入list中
 		for(int i = 0 ; i<gnssCnt;i++){
-			gnssData = new GpsBean();
-			gnssData.disposeData(channelBuffer);
-			gnssDataList.add(gnssData);
+			GpsCmdBean gpsData = new GpsCmdBean();
+			gpsData.disposeData(channelBuffer);
+			gnssDataList.add(gpsData);
 		}
 		KKLog.info("DOWN_EXG_MSG_HISTORY_ARCOSSAREA------4.5.3.2.3车辆定位信息交换补发消息");
 	}
@@ -57,7 +58,7 @@ public class CmdDownExgMsgHistoryArcossarea extends CmdHeadSubBizWithoutCar {
 
 	@Override
 	protected int getCmdSubBizDataSize() {
-		return 1+this.gnssData.getBeanSize()*gnssDataList.size();
+		return 1 + GpsCmdBean.getCmdBeanSize() * gnssDataList.size();
 	}
 
     public byte getGnssCnt() {
@@ -68,19 +69,11 @@ public class CmdDownExgMsgHistoryArcossarea extends CmdHeadSubBizWithoutCar {
         this.gnssCnt = gnssCnt;
     }
 
-    public List<GpsBean> getGnssDataList() {
+    public List<GpsCmdBean> getGnssDataList() {
         return gnssDataList;
     }
 
-    public void setGnssDataList(List<GpsBean> gnssDataList) {
+    public void setGnssDataList(List<GpsCmdBean> gnssDataList) {
         this.gnssDataList = gnssDataList;
-    }
-
-    public GpsBean getGnssData() {
-        return gnssData;
-    }
-
-    public void setGnssData(GpsBean gnssData) {
-        this.gnssData = gnssData;
     }
 }

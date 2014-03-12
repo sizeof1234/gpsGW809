@@ -7,7 +7,7 @@ package com.jsecode.cmd.up.req;
 import org.jboss.netty.buffer.ChannelBuffer;
 
 import com.jsecode.cmd.CmdHeadSubBizWithCar;
-import com.jsecode.cmd.bean.GpsBean;
+import com.jsecode.cmd.bean.GpsCmdBean;
 
 /**
  * 实时上传车辆定位信息消息
@@ -17,10 +17,10 @@ import com.jsecode.cmd.bean.GpsBean;
  */
 public class CmdUpExgMsgRealLocationReq extends CmdHeadSubBizWithCar {
 	
-	private GpsBean gpsBean;
+	private GpsCmdBean gpsBean;
 
 	public CmdUpExgMsgRealLocationReq() {
-		gpsBean = new GpsBean();
+		gpsBean = EMPTY_GPS_BEAN;
 	}
 
 	@Override
@@ -38,8 +38,14 @@ public class CmdUpExgMsgRealLocationReq extends CmdHeadSubBizWithCar {
 		gpsBean.fillChannelBuffer(channelBuffer);
 	}
 
-	public GpsBean getGpsBean() {
+	public GpsCmdBean getGpsBean() {
 		return gpsBean;
+	}
+
+	public void setGpsBean(GpsCmdBean gpsBean) {
+		if (gpsBean != null) {
+			this.gpsBean = gpsBean;
+		}
 	}
 
 }

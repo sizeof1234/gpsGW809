@@ -10,7 +10,7 @@ import java.util.List;
 import org.jboss.netty.buffer.ChannelBuffer;
 
 import com.jsecode.cmd.CmdHeadSubBizWithCar;
-import com.jsecode.cmd.bean.GpsBean;
+import com.jsecode.cmd.bean.GpsCmdBean;
 
 /**
  * 车辆定位信息自动补报请求消息
@@ -24,10 +24,10 @@ import com.jsecode.cmd.bean.GpsBean;
  */
 public class CmdUpExgMsgHistoryLocationReq extends CmdHeadSubBizWithCar {
 	
-	private List<GpsBean> gpsList;
+	private List<GpsCmdBean> gpsList;
 
 	public CmdUpExgMsgHistoryLocationReq() {
-		gpsList = new ArrayList<GpsBean>();
+		gpsList = new ArrayList<GpsCmdBean>();
 	}
 
 	@Override
@@ -46,12 +46,12 @@ public class CmdUpExgMsgHistoryLocationReq extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-		for (GpsBean gpsBean : gpsList) {
+		for (GpsCmdBean gpsBean : gpsList) {
 			gpsBean.fillChannelBuffer(channelBuffer);
 		}
 	}
 	
-	public void addGpsData(GpsBean gpsBean) {
+	public void addGpsData(GpsCmdBean gpsBean) {
 		if (gpsBean != null) {
 			this.gpsList.add(gpsBean);
 		}

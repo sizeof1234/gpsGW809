@@ -141,6 +141,8 @@ public class TcpClient extends AbstractMainSubLink implements ITcpClient{
 		cmdUpConnectReq.setDownLinkIp(KKTool.getFixedLenString(sysParams.getSubLinkIp(), 32, Const.BLANK_CHAR, false).getBytes());
 		cmdUpConnectReq.setDownLinkPort(sysParams.getSubLinkPort());
 		this.sendData(cmdUpConnectReq.getSendBuffer());
+		
+
 	}
 
 	/**
@@ -173,13 +175,16 @@ public class TcpClient extends AbstractMainSubLink implements ITcpClient{
 			KKLog.info("main link connected");
 			login();
 		}
+		this.gw809.doOnLinkConnected(this);
 	}
 
 	@Override
 	public void disconnectChannel(Channel channel) {
+		KKLog.info("main link disconnected");
 		stopHeartbeatTimer();
 		startReconnectTimer();
 		this.setChannel(null);
+		this.gw809.doOnLinkDisconnected(this);
 	}
 
 	@Override

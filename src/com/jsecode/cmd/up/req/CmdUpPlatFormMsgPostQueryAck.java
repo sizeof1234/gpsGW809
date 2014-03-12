@@ -42,6 +42,8 @@ public class CmdUpPlatFormMsgPostQueryAck extends CmdHeadSubBizWithoutCar {
 		channelBuffer.writeByte(this.objectType);
 		channelBuffer.writeBytes(this.objectId);
 		channelBuffer.writeInt(this.infoId);
+		
+		this.infoSize = this.infoContent.length;
 		channelBuffer.writeInt(this.infoSize);
 		channelBuffer.writeBytes(this.infoContent);
 	}
@@ -74,10 +76,6 @@ public class CmdUpPlatFormMsgPostQueryAck extends CmdHeadSubBizWithoutCar {
 
 	public int getInfoSize() {
 		return infoSize;
-	}
-
-	public void setInfoSize(int infoSize) {
-		this.infoSize = infoSize;
 	}
 
 	public byte[] getInfoContent() {

@@ -2,9 +2,12 @@ package com.jsecode.cmd;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 
+import com.jsecode.cmd.bean.GpsCmdBean;
+
 public interface ICmd {
 	
 	byte[] ZERO_BYTES = new byte[0];
+	GpsCmdBean EMPTY_GPS_BEAN = new GpsCmdBean();
 
 	//命令长度（从头标识到尾标识完整的长度）
 	public int getCmdSize();

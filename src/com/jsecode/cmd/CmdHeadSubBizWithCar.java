@@ -4,6 +4,8 @@
  */
 package com.jsecode.cmd;
 
+import java.nio.charset.Charset;
+
 import org.jboss.netty.buffer.ChannelBuffer;
 
 
@@ -15,13 +17,15 @@ public abstract class CmdHeadSubBizWithCar extends CmdHeadSubBizWithoutCar {
 	private byte[] vehicleNo;
 	private byte vehicleColor;
 	
+	private String vehicleNoStr = null;//该字段无需dispose、fill操作
+	
 	public CmdHeadSubBizWithCar() {
 		this.vehicleNo = new byte[21];
 	}
 
 	@Override
 	protected int getCmdBodySize() {
-		return this.vehicleNo.length + 1 + 2 + 1 + getCmdSubBizDataSize();
+		return this.vehicleNo.length + 1 + 2 + 4 + getCmdSubBizDataSize();
 	}
 
 	@Override
@@ -38,6 +42,9 @@ public abstract class CmdHeadSubBizWithCar extends CmdHeadSubBizWithoutCar {
 		channelBuffer.writeBytes(this.vehicleNo);
 		channelBuffer.writeByte(this.vehicleColor);
 		channelBuffer.writeShort(this.getSubMsgId());
+		
+		this.setSubDataSize(this.getCmdSubBizDataSize());
+		
 		channelBuffer.writeInt(this.getSubDataSize());
 		fillCmdSubBizData(channelBuffer);
 	}
@@ -45,9 +52,18 @@ public abstract class CmdHeadSubBizWithCar extends CmdHeadSubBizWithoutCar {
 	public byte[] getVehicleNo() {
 		return vehicleNo;
 	}
+	
+	public String getVehicleNoStr() {
+		if (this.vehicleNoStr == null) {
+			this.vehicleNoStr = new String(this.vehicleNo, Charset.forName("GBK")).trim();
+		}
+		return this.vehicleNoStr;
+	}
 
 	public void setVehicleNo(byte[] vehicleNo) {
-		this.vehicleNo = vehicleNo;
+		if (isByteArraySameSize(this.vehicleNo, vehicleNo)) {
+			this.vehicleNo = vehicleNo;
+		}
 	}
 
 	public byte getVehicleColor() {

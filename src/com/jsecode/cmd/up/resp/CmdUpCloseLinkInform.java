@@ -27,7 +27,6 @@ public class CmdUpCloseLinkInform extends CmdHead {
 
 	@Override
 	protected void fillCmdBody(ChannelBuffer channelBuffer) {
-		// TODO Auto-generated method stub
 
 	}
 

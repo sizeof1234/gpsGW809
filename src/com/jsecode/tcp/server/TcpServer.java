@@ -98,12 +98,12 @@ public class TcpServer extends AbstractMainSubLink implements ITcpServer {
 		IMainSubLink mainLink = this.gw809.getMainLink(false);
 		CmdUpCloseLinkInform cmdUpCloseLinkInform = new CmdUpCloseLinkInform();
 		cmdUpCloseLinkInform.setMsgFlagId(Const.UP_CLOSELINK_INFORM);
-		cmdUpCloseLinkInform.setErrorCode((byte)0);
+		cmdUpCloseLinkInform.setErrorCode(Const.UP_CLOSE_LINK_REASON_OTHER);
 		ChannelFuture future = mainLink.sendData(cmdUpCloseLinkInform.getSendBuffer());
 		future.addListener(new ChannelFutureListener() {
 			@Override
 			public void operationComplete(ChannelFuture future) throws Exception {
-				if (future.isDone()) {
+				if (future.isDone()) {//don't use isSuccess()
 					Channel channel = getChannel();
 					if (channel != null) {
 						channel.close();
@@ -128,8 +128,8 @@ public class TcpServer extends AbstractMainSubLink implements ITcpServer {
 		this.setChannel(channel);
 		if (isChannelConnected()) {
 			KKLog.info("sub link connected");
-		} else {
 		}
+		this.gw809.doOnLinkConnected(this);
 	}
 
 	@Override
@@ -140,6 +140,7 @@ public class TcpServer extends AbstractMainSubLink implements ITcpServer {
 			this.setChannel(null);
 			KKLog.info("sub link disconnected");
 		}
+		this.gw809.doOnLinkDisconnected(this);
 	}
 
 	@Override

@@ -1,86 +1,62 @@
 package com.jsecode.cmd.down.req;
 
-import com.jsecode.cmd.CmdHead;
+import com.jsecode.cmd.CmdHeadSubBizWithoutCar;
 import com.jsecode.utils.KKLog;
 import org.jboss.netty.buffer.ChannelBuffer;
 
 /**
- * 
- *    
- * 项目名称：gpsGW809   
- * 类名称：CmdDownPlatformMsgPostQueryReq   
- * 类描述：   
- ***************************** 
+ * 项目名称：gpsGW809
+ * 类名称：CmdDownPlatformMsgPostQueryReq
+ * 类描述：
+ * ****************************
  * 4.5.4.2.2平台查岗请求消息
- * 子业务类型标识：DOWN_PLATFORM_MSG_POST_QUERY_REQ。 
+ * 子业务类型标识：DOWN_PLATFORM_MSG_POST_QUERY_REQ。
  * 描述：上级平台不定期向下级平台发送平台查岗信息
- ***************************** 
- * 创建人：zhaorg   
- * 创建时间：2014-2-17 下午03:34:49   
- * 修改人：   
- * 修改时间：   
- * 修改备注：   
- * @version    
- *    
- *
+ * ****************************
+ * 创建人：zhaorg
+ * 创建时间：2014-2-17 下午03:34:49
+ * 修改人：
+ * 修改时间：
+ * 修改备注：
  */
-public class CmdDownPlatformMsgPostQueryReq extends CmdHead {
+public class CmdDownPlatformMsgPostQueryReq extends CmdHeadSubBizWithoutCar {
 
-	private short dataType;        //子业务标识
-	private int dataLength;		 //后续数据长度
-	private byte objectType;	 //查岗对象的类型
-	private byte [] objectId;	 //查岗对象的ID
-	private int infoId;			 //信息ID
-	private int infoLength;		 //信息长度
-	private byte[] infoContent;	 //信息内容
-	
-	public CmdDownPlatformMsgPostQueryReq(){
-		objectId = new byte[12];
+    private byte objectType;     //查岗对象的类型
+    private byte[] objectId;     //查岗对象的ID
+    private int infoId;             //信息ID
+    private int infoLength;         //信息长度
+    private byte[] infoContent;     //信息内容
+
+    public CmdDownPlatformMsgPostQueryReq() {
+        objectId = new byte[12];
         infoContent = ZERO_BYTES;
-		
-	}
 
-	@Override
-	protected void disposeCmdBody(ChannelBuffer channelBuffer) {
-		this.dataType = channelBuffer.readShort();
-		this.dataLength = channelBuffer.readInt();
-		this.objectType = channelBuffer.readByte();
-		channelBuffer.readBytes(objectId);
-		this.infoId = channelBuffer.readInt();
-		this.infoLength = channelBuffer.readInt();
-		//初始化信息内容字节数组
-		infoContent = new byte[infoLength];
-		channelBuffer.readBytes(infoContent);
+    }
+
+    @Override
+    protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+
+        this.objectType = channelBuffer.readByte();
+        channelBuffer.readBytes(objectId);
+        this.infoId = channelBuffer.readInt();
+        this.infoLength = channelBuffer.readInt();
+        //初始化信息内容字节数组
+        infoContent = new byte[infoLength];
+        channelBuffer.readBytes(infoContent);
         KKLog.info("DOWN_PLATFORM_MSG_POST_QUERY_REQ------4.5.4.2.2平台查岗请求消息");
-		
-	}
 
-	@Override
-	protected void fillCmdBody(ChannelBuffer channelBuffer) {
-
-	}
-
-	@Override
-	protected int getCmdBodySize() {
-		return 2+4+1+this.objectId.length+4+4+this.infoLength;
-	}
-
-
-    public short getDataType() {
-        return dataType;
     }
 
-    public void setDataType(short dataType) {
-        this.dataType = dataType;
+    @Override
+    protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
+
     }
 
-    public int getDataLength() {
-        return dataLength;
+    @Override
+    protected int getCmdSubBizDataSize() {
+        return 1 + this.objectId.length + 4 + 4 + this.infoLength;
     }
 
-    public void setDataLength(int dataLength) {
-        this.dataLength = dataLength;
-    }
 
     public byte getObjectType() {
         return objectType;

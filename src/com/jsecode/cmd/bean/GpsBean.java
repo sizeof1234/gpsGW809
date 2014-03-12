@@ -1,128 +1,108 @@
 /**
  * @author 	Jadic
- * @created 2014-2-14
+ * @created 2014-2-28
  */
 package com.jsecode.cmd.bean;
 
-import org.jboss.netty.buffer.ChannelBuffer;
+import java.util.Calendar;
+import java.util.Date;
 
-public class GpsBean extends AbstractCmdBean {
+import com.jsecode.utils.Const;
+
+/**
+ * 加载数据库采用该Gps类封装数据
+ */
+public class GpsBean {
 	
-	private byte encrypt;
-	private byte[] date;
-	private byte[] time;
-	private int lon;
-	private int lat;
+	private int hostId;		//车辆唯一标识
+	private String vehicleNo;	//车牌号
+	private byte plateColor;	//车牌颜色
+	
+	private Date gpsTime;
+	private double lon;
+	private double lat;
 	private short speed;
-	private short speedRec;
-	private int miles;
 	private short direction;
-	private short altitude;
-	private int state;
-	private int alarm;	
+	private Date dbSysTime;
 
 	public GpsBean() {
-		this.date = new byte[4];
-		this.time = new byte[3];
+		vehicleNo = Const.EMPTY_STR;
+	}
+	
+	public GpsCmdBean getGpsCmdBean() {
+		GpsCmdBean gpsCmdBean = new GpsCmdBean();
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(this.gpsTime.getTime());
+		int year = c.get(Calendar.YEAR);
+		int month = c.get(Calendar.MONTH) + 1;
+		int day = c.get(Calendar.DAY_OF_MONTH);
+		int hour = c.get(Calendar.HOUR_OF_DAY);
+		int minute = c.get(Calendar.MINUTE);
+		int second = c.get(Calendar.SECOND);
+		byte[] date = gpsCmdBean.getDate();
+		byte[] time = gpsCmdBean.getTime();
+		date[0] = (byte)day;
+		date[1] = (byte)month;
+		date[2] = (byte)(year >> 8);
+		date[3] = (byte)(year & 0xFF);
+		time[0] = (byte)hour;
+		time[1] = (byte)minute;
+		time[2] = (byte)second;
+		gpsCmdBean.setLon((int)(this.lon * 1000000));
+		gpsCmdBean.setLat((int)(this.lat * 1000000));
+		gpsCmdBean.setSpeed(this.speed);
+		gpsCmdBean.setDirection(this.direction);
+		gpsCmdBean.setState(3);
+		return gpsCmdBean;
 	}
 
-	@Override
-	public int getBeanSize() {
-		return 1 
-			 + this.date.length 
-			 + this.time.length 
-			 + 4 
-			 + 4 
-			 + 2 
-			 + 2 
-			 + 4 
-			 + 2 
-			 + 2 
-			 + 4 
-			 + 4;
+	public int getHostId() {
+		return hostId;
 	}
 
-	@Override
-	public boolean disposeData(ChannelBuffer channelBuffer) {
-		if (channelBuffer != null && channelBuffer.readableBytes() >= this.getBeanSize()) {
-			this.encrypt = channelBuffer.readByte();
-			channelBuffer.readBytes(this.date);
-			channelBuffer.readBytes(this.time);
-			this.lon = channelBuffer.readInt();
-			this.lat = channelBuffer.readInt();
-			this.speed = channelBuffer.readShort();
-			this.speedRec = channelBuffer.readShort();
-			this.miles = channelBuffer.readInt();
-			this.direction = channelBuffer.readShort();
-			this.altitude = channelBuffer.readShort();
-			this.state = channelBuffer.readInt();
-			this.alarm = channelBuffer.readInt();
-			return true;
-		}
-		return false;
+	public void setHostId(int hostId) {
+		this.hostId = hostId;
 	}
 
-	@Override
-	public boolean fillChannelBuffer(ChannelBuffer channelBuffer) {
-		if (channelBuffer != null && channelBuffer.writableBytes() >= this.getBeanSize()) {
-			channelBuffer.writeByte(this.encrypt);
-			channelBuffer.writeBytes(this.date);
-			channelBuffer.writeBytes(this.time);
-			channelBuffer.writeInt(this.lon);
-			channelBuffer.writeInt(this.lat);
-			channelBuffer.writeShort(this.speed);
-			channelBuffer.writeShort(this.speedRec);
-			channelBuffer.writeInt(this.miles);
-			channelBuffer.writeShort(this.direction);
-			channelBuffer.writeShort(this.altitude);
-			channelBuffer.writeInt(this.state);
-			channelBuffer.writeInt(this.alarm);
-			return true;
-		}
-		return false;
+	public String getVehicleNo() {
+		return vehicleNo;
 	}
 
-	public byte getEncrypt() {
-		return encrypt;
-	}
-
-	public void setEncrypt(byte encrypt) {
-		this.encrypt = encrypt;
-	}
-
-	public byte[] getDate() {
-		return date;
-	}
-
-	public void setDate(byte[] date) {
-		if (isByteArraySameSize(this.date, date)) {
-			this.date = date;
+	public void setVehicleNo(String vehicleNo) {
+		if (vehicleNo != null) {
+			this.vehicleNo = vehicleNo;
 		}
 	}
 
-	public byte[] getTime() {
-		return time;
+	public byte getPlateColor() {
+		return plateColor;
 	}
 
-	public void setTime(byte[] time) {
-		if (isByteArraySameSize(this.time, time)) {
-			this.time = time;
-		}
+	public void setPlateColor(byte plateColor) {
+		this.plateColor = plateColor;
 	}
 
-	public int getLon() {
+	public Date getGpsTime() {
+		return gpsTime;
+	}
+
+	public void setGpsTime(Date gpsTime) {
+		this.gpsTime = gpsTime;
+	}
+
+	public double getLon() {
 		return lon;
 	}
 
-	public void setLon(int lon) {
+	public void setLon(double lon) {
 		this.lon = lon;
 	}
 
-	public int getLat() {
+	public double getLat() {
 		return lat;
 	}
 
-	public void setLat(int lat) {
+	public void setLat(double lat) {
 		this.lat = lat;
 	}
 
@@ -134,22 +114,6 @@ public class GpsBean extends AbstractCmdBean {
 		this.speed = speed;
 	}
 
-	public short getSpeedRec() {
-		return speedRec;
-	}
-
-	public void setSpeedRec(short speedRec) {
-		this.speedRec = speedRec;
-	}
-
-	public int getMiles() {
-		return miles;
-	}
-
-	public void setMiles(int miles) {
-		this.miles = miles;
-	}
-
 	public short getDirection() {
 		return direction;
 	}
@@ -158,28 +122,12 @@ public class GpsBean extends AbstractCmdBean {
 		this.direction = direction;
 	}
 
-	public short getAltitude() {
-		return altitude;
+	public Date getDbSysTime() {
+		return dbSysTime;
 	}
 
-	public void setAltitude(short altitude) {
-		this.altitude = altitude;
-	}
-
-	public int getState() {
-		return state;
-	}
-
-	public void setState(int state) {
-		this.state = state;
-	}
-
-	public int getAlarm() {
-		return alarm;
-	}
-
-	public void setAlarm(int alarm) {
-		this.alarm = alarm;
+	public void setDbSysTime(Date dbSysTime) {
+		this.dbSysTime = dbSysTime;
 	}
 
 }

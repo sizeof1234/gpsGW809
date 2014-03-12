@@ -19,7 +19,6 @@ import org.jboss.netty.handler.codec.frame.Delimiters;
 import org.jboss.netty.handler.codec.string.StringDecoder;
 import org.jboss.netty.handler.codec.string.StringEncoder;
 
-import com.jsecode.ITelnetServer;
 import com.jsecode.utils.KKLog;
 
 public class TelnetServer {

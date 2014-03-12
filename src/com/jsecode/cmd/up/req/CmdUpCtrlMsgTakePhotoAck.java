@@ -7,7 +7,7 @@ package com.jsecode.cmd.up.req;
 import org.jboss.netty.buffer.ChannelBuffer;
 
 import com.jsecode.cmd.CmdHeadSubBizWithCar;
-import com.jsecode.cmd.bean.GpsBean;
+import com.jsecode.cmd.bean.GpsCmdBean;
 
 /**
  * 车辆拍照应答消息
@@ -18,7 +18,7 @@ import com.jsecode.cmd.bean.GpsBean;
 public class CmdUpCtrlMsgTakePhotoAck extends CmdHeadSubBizWithCar {
 	
 	private byte photoRespFlag;	//拍照应答标识
-	private GpsBean gpsBean;	//拍照时的位置信息
+	private GpsCmdBean gpsBean;	//拍照时的位置信息
 	private byte lensId;		//镜头ID
 	private int photoLen;		//照片长度
 	private byte sizeType;		//照片尺寸类型
@@ -26,7 +26,7 @@ public class CmdUpCtrlMsgTakePhotoAck extends CmdHeadSubBizWithCar {
 	private byte[] photoData;	//照片数据内容
 
 	public CmdUpCtrlMsgTakePhotoAck() {
-		this.gpsBean = new GpsBean();
+		this.gpsBean = new GpsCmdBean();
 		this.photoData = ZERO_BYTES;
 	}
 
@@ -47,6 +47,7 @@ public class CmdUpCtrlMsgTakePhotoAck extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
+        this.photoLen = this.photoData.length;
 		channelBuffer.writeByte(this.photoRespFlag);
 		this.gpsBean.fillChannelBuffer(channelBuffer);
 		channelBuffer.writeByte(this.lensId);
@@ -76,10 +77,6 @@ public class CmdUpCtrlMsgTakePhotoAck extends CmdHeadSubBizWithCar {
 		return photoLen;
 	}
 
-	public void setPhotoLen(int photoLen) {
-		this.photoLen = photoLen;
-	}
-
 	public byte getSizeType() {
 		return sizeType;
 	}
@@ -106,7 +103,7 @@ public class CmdUpCtrlMsgTakePhotoAck extends CmdHeadSubBizWithCar {
 		}
 	}
 
-	public GpsBean getGpsBean() {
+	public GpsCmdBean getGpsBean() {
 		return gpsBean;
 	}
 

@@ -41,7 +41,7 @@ public class TcpClientHandler extends SimpleChannelHandler {
 	@Override
 	public void channelDisconnected(ChannelHandlerContext ctx,
 			ChannelStateEvent e) throws Exception {
-//		KKLog.info("channelDisconnected:" + ctx.getChannel().getId());
+		KKLog.info("channelDisconnected:" + ctx.getChannel().getId());
 		this.tcpClient.disconnectChannel(ctx.getChannel());
 	}
 }

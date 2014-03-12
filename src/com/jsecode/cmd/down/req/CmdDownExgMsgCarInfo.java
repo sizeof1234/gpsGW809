@@ -29,10 +29,11 @@ public class CmdDownExgMsgCarInfo extends CmdHeadSubBizWithCar{
 	private byte[] carInfo;      // 数据部分
 
     public  CmdDownExgMsgCarInfo(){
-        carInfo = new byte[this.getSubDataSize()];
+        carInfo = ZERO_BYTES;
     }
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.carInfo = new byte[this.getSubDataSize()];
         channelBuffer.readBytes(carInfo);
         KKLog.info("DOWN_EXG_MSG_CAR_INFO------4.5.3.2.4交换车辆静态信息消息");
 	}
@@ -44,7 +45,7 @@ public class CmdDownExgMsgCarInfo extends CmdHeadSubBizWithCar{
 
 	@Override
 	protected int getCmdSubBizDataSize() {
-		return 0;
+		return this.carInfo.length;
 	}
 
     public byte[] getCarInfo() {
@@ -52,7 +53,7 @@ public class CmdDownExgMsgCarInfo extends CmdHeadSubBizWithCar{
     }
 
     public void setCarInfo(byte[] carInfo) {
-        if (isByteArraySameSize(this.carInfo, carInfo)) {
+        if (carInfo != null) {
             this.carInfo = carInfo;
         }
     }

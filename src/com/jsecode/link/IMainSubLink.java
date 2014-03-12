@@ -22,11 +22,28 @@ public interface IMainSubLink {
 	boolean isChannelConnected();
 	
 	/**
+	 * 链路最后一次收到完整协议包数据时间
+	 * @return
+	 */
+	long getLastRecvDataTime();
+	
+	/**
+	 * 启动链路
+	 */
+	void start();
+	
+	/**
 	 * 关闭链路<p>
 	 * 主链路不再主动连接上级平台<p>
 	 * 从链路不再接受上级平台连接
 	 */
 	void closeLink();
+	
+	/**
+	 * 链路是否被手动停止
+	 * @return
+	 */
+	boolean isStopped();
 	
 	/**
 	 * 是否是主链路

@@ -19,7 +19,7 @@ public abstract class CmdHeadSubBizWithoutCar extends CmdHead {
 
 	@Override
 	protected int getCmdBodySize() {
-		return 2 + 1 + getCmdSubBizDataSize();
+		return 2 + 4 + getCmdSubBizDataSize();
 	}
 
 	@Override
@@ -32,6 +32,9 @@ public abstract class CmdHeadSubBizWithoutCar extends CmdHead {
 	@Override
 	protected void fillCmdBody(ChannelBuffer channelBuffer) {
 		channelBuffer.writeShort(this.subMsgId);
+		
+		this.subDataSize = this.getCmdSubBizDataSize();
+		
 		channelBuffer.writeInt(this.subDataSize);
 		this.fillCmdSubBizData(channelBuffer);
 	}
@@ -55,9 +58,8 @@ public abstract class CmdHeadSubBizWithoutCar extends CmdHead {
 	public int getSubDataSize() {
 		return subDataSize;
 	}
-
-	public void setSubDataSize(int subDataSize) {
+	
+	protected void setSubDataSize(int subDataSize) {
 		this.subDataSize = subDataSize;
 	}
-	
 }

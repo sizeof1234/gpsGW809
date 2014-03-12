@@ -9,6 +9,7 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
 
 import com.jsecode.utils.Const;
+import com.jsecode.utils.KKLog;
 import com.jsecode.utils.KKTool;
 
 public abstract class AbstractMainSubLink implements IMainSubLink {
@@ -35,7 +36,9 @@ public abstract class AbstractMainSubLink implements IMainSubLink {
 	@Override
 	public ChannelFuture sendData(ChannelBuffer buffer) {
 		if (this.channel != null) {
-			return this.channel.write(KKTool.getEscapedBuffer(buffer));
+			ChannelBuffer sendBuffer = KKTool.getEscapedBuffer(buffer);
+			KKLog.sendData(KKTool.channelBufferReadableBytesToHexStr(sendBuffer));
+			return this.channel.write(sendBuffer);
 		}
 		return null;
 	}

@@ -16,7 +16,6 @@ import com.jsecode.cmd.CmdHeadSubBizWithCar;
 public class CmdUpExgMsgReturnEndAck extends CmdHeadSubBizWithCar {
 
 	public CmdUpExgMsgReturnEndAck() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

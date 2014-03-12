@@ -20,7 +20,7 @@ public class TcpDataDecoder extends FrameDecoder {
 		Object message = e.getMessage();
 		if (message instanceof ChannelBuffer) {
 			ChannelBuffer buffer = (ChannelBuffer)message;
-			KKLog.info("recv data:" + buffer.readableBytes() + " " + KKTool.channelBufferToHexStr(buffer));
+			KKLog.recvData("[" + buffer.readableBytes() + "] " + KKTool.channelBufferToHexStr(buffer));
 		}
 		
 		super.messageReceived(ctx, e);

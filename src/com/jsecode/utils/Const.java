@@ -12,8 +12,11 @@ public final class Const {
 	public final static byte CMD_END  = 0x5D;//809消息命令尾
 	
 	public final static long RECONNECT_INTERVAL_SECONDS = 5;			//重连间隔,单位:秒
-	public final static long HEARTBEAT_INTERVAL_SECONDS = 20;			//心跳间隔,单位:秒
-	public final static long OVER_TIME_MILLISECONDS     = 60 * 1000;	//超时时间,单位:毫秒	
+	public final static long HEARTBEAT_INTERVAL_SECONDS = 60;			//心跳间隔,单位:秒
+	public final static long OVER_TIME_MILLISECONDS     = 3 * 60 * 1000;	//超时时间,单位:毫秒	
+	
+	public final static long LOAD_TERMINAL_INFO_INTERVAL_SECONDS = 2 * 60;//加载终端基础信息的间隔，变化较少，可适当放长
+	public final static long LOAD_GPS_DATA_INTERVAL_SECONDS      = 5;     //加载实时定位数据的间隔
 	
 	public final static char BLANK_CHAR = 0x00;//空字符 809协议中需要填充的空字符
 
@@ -99,6 +102,11 @@ public final class Const {
 	public final static String TELNET_CMD_END_MAINLINK 		= "end main";	//关闭主链路
 	public final static String TELNET_CMD_START_SUBLINK 		= "start sub";	//启动从链路
 	public final static String TELNET_CMD_END_SUBLINK 		= "end sub";	//关闭从链路
+	public final static String TELNET_CMD_LINK_STATUS			= "link status";//主从链路链接状态
+	
+	public final static String TELNET_CONNECT_WELCOME			= "Welcome to 809 server!\r\n"
+																+ "Input 'help' for all supported commands.\r\n\r\n";
+	public final static String TELNET_DISCONNECT_TIP			= "You close the connection, have a good day, bye\r\n\r\n";
 	//********************************************telnet 服务相关约定常量*********************************************/
 	
 	//*********************************************登录应答相关常量**********************************************/
@@ -116,6 +124,7 @@ public final class Const {
     public final static String SRET_USER_UNREGISTERED = "用户未注册";
     public final static String SRET_USER_PASS_ERR 	= "密码错误";
     public final static String SRET_RES_LIMIT			= "资源紧张";
+    public final static String SRET_OTHER				= "其他";
     //*********************************************登录应答相关常量**********************************************/
 	
 	

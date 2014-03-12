@@ -10,7 +10,6 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
-import com.jsecode.ITelnetServer;
 
 public class TelnetServerHandler extends SimpleChannelUpstreamHandler {
 	

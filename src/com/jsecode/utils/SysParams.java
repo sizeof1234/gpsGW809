@@ -40,6 +40,10 @@ public class SysParams {
 	private int m1;
 	private int ia1;
 	private int ic1;
+	
+	/* 实际业务中需要配置的参数 */
+	private int minVehicleNoGBKSize;//车牌号GBK编码最短长度
+	private int maxVehicleNoGBKSize;//车牌号GBK编码最长长度
 
 	public static SysParams getInstance() {
 		return sysParams;
@@ -74,6 +78,8 @@ public class SysParams {
 		this.dbUserName = kkConfig.getStrValue("dbUserName");
 		this.dbUserPass = kkConfig.getStrValue("dbUserPass");
 		
+		this.minVehicleNoGBKSize = kkConfig.getIntValue("minVehicleNoGBKSize");
+		this.maxVehicleNoGBKSize = kkConfig.getIntValue("maxVehicleNoGBKSize");
 	}
 	
 	public static String getDefaultStr(String expectedVal, String defaultVal) {
@@ -153,6 +159,14 @@ public class SysParams {
 
 	public int getIc1() {
 		return ic1;
+	}
+
+	public int getMinVehicleNoGBKSize() {
+		return minVehicleNoGBKSize;
+	}
+
+	public int getMaxVehicleNoGBKSize() {
+		return maxVehicleNoGBKSize;
 	}
 
 }

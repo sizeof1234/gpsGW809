@@ -1,7 +1,7 @@
 package com.jsecode.cmd.down.req;
 
 import com.jsecode.cmd.CmdHeadSubBizWithCar;
-import com.jsecode.cmd.bean.GpsBean;
+import com.jsecode.cmd.bean.GpsCmdBean;
 import com.jsecode.utils.KKLog;
 import org.jboss.netty.buffer.ChannelBuffer;
 
@@ -37,10 +37,10 @@ import org.jboss.netty.buffer.ChannelBuffer;
  */
 public class CmdDownExgMsgCarLocation extends CmdHeadSubBizWithCar{
 
-	private GpsBean gnssData;    // 数据部分
+	private GpsCmdBean gnssData;    // 数据部分
 	
 	public   CmdDownExgMsgCarLocation() {
-		gnssData = new GpsBean();
+		gnssData = new GpsCmdBean();
 	}
 
 	@Override
@@ -58,11 +58,11 @@ public class CmdDownExgMsgCarLocation extends CmdHeadSubBizWithCar{
 		return this.gnssData.getBeanSize();
 	}
 
-    public GpsBean getGnssData() {
+    public GpsCmdBean getGnssData() {
         return gnssData;
     }
 
-    public void setGnssData(GpsBean gnssData) {
+    public void setGnssData(GpsCmdBean gnssData) {
         this.gnssData = gnssData;
     }
 }

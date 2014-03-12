@@ -43,6 +43,8 @@ public class CmdUpWarnMsgAdptInfo extends CmdHeadSubBizWithCar {
 		channelBuffer.writeShort(this.warnType);
 		channelBuffer.writeLong(this.warnTime);
 		channelBuffer.writeInt(this.infoId);
+		
+		this.infoSize = this.infoContent.length;
 		channelBuffer.writeInt(infoSize);
 		channelBuffer.writeBytes(infoContent);
 	}
@@ -81,10 +83,6 @@ public class CmdUpWarnMsgAdptInfo extends CmdHeadSubBizWithCar {
 
 	public int getInfoSize() {
 		return infoSize;
-	}
-
-	public void setInfoSize(int infoSize) {
-		this.infoSize = infoSize;
 	}
 
 	public byte[] getInfoContent() {

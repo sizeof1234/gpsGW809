@@ -29,6 +29,10 @@ import org.jboss.netty.buffer.ChannelBuffers;
 
 public class KKTool {
 	
+	final static char BLANK_CHAR = 0x00;
+	
+	final static String EMPTY_STR = "";
+	final static byte[] ZERO_BYTES = new byte[0];
 	final static ChannelBuffer EMPTY_BUFFER = ChannelBuffers.buffer(0);
 	
 	final static byte BYTE_01 = 0x01;
@@ -352,6 +356,14 @@ public class KKTool {
     public static String channelBufferToHexStr(ChannelBuffer channelBuffer) {
     	return byteArrayToHexStr(channelBuffer.array());
     }
+    
+    public static String channelBufferReadableBytesToHexStr(ChannelBuffer channelBuffer) {
+    	StringBuilder result = new StringBuilder("");
+        for (int i = channelBuffer.readerIndex(); i < channelBuffer.writerIndex(); i ++) {
+            result.append(byteToHexStr(channelBuffer.getByte(i)));
+        }
+        return result.toString();
+    }
 
     public static byte[] short2Bytes(short sValue, byte bigOrLittle) {
         byte[] b = new byte[2];
@@ -469,6 +481,10 @@ public class KKTool {
         } catch (InterruptedException ex) {
             
         }
+    }
+    
+    public static void sleppTimeWithException(long milliseconds) throws InterruptedException {
+    	Thread.sleep(milliseconds);
     }
     
     public static void sleepOnMinuteUnit(int minutes) {
@@ -634,7 +650,7 @@ public class KKTool {
         }
     }
 
-    public static String getExceptionTip(Exception e) {
+    public static String getExceptionTip(Throwable e) {
     	String ret = null;
         if (e != null) {
         	ret = "msg:" + e.getMessage() + " stacktrace:";
@@ -1425,6 +1441,90 @@ public class KKTool {
     }
     
     /**
+     * 获取固定长度的字符串，该字符串编码格式为GBK
+     * @param srcStr
+     * @param fixedLen
+     * @param filledChar
+     * @param isFillLeft
+     * @return
+     */
+    public static String getFixedLenGBKStr(String srcStr, int fixedLen, char filledChar, boolean isFillLeft) {
+    	if (fixedLen <= 0) {
+    		return "";
+    	}
+    	StringBuilder sBuilder = null;
+    	int strLen = 0;
+    	if (srcStr != null) {
+    		strLen = srcStr.getBytes(Charset.forName("GBK")).length;
+    		if (strLen == fixedLen) {
+    			return srcStr;
+    		} else if (strLen > fixedLen) {
+    			return srcStr.substring(0, fixedLen);
+    		} else {
+    			sBuilder = new StringBuilder(srcStr);
+    		}
+    	} else {
+    		sBuilder = new StringBuilder();
+    	}
+    	if (isFillLeft) {
+    		while (strLen ++ < fixedLen) {
+    			sBuilder.insert(0, filledChar);
+    		}
+    	} else {
+	    	while (strLen ++ < fixedLen) {
+	    		sBuilder.append(filledChar);
+	    	}
+    	}
+    	return sBuilder.toString();
+    }
+    
+    /**
+     * GBK编码的字节转成字符串
+     * @param gbkBytes
+     * @return
+     */
+    public static String toGBKStr(byte[] gbkBytes) {
+    	if (gbkBytes != null) {
+    		return new String(gbkBytes, Charset.forName("GBK"));
+    	}
+    	return EMPTY_STR;
+    }
+    
+    /**
+     * GBK编码的字符串转成字节数组
+     * @param gbkStr
+     * @return
+     */
+    public static byte[] toGBKBytes(String gbkStr) {
+    	if (gbkStr != null) {
+    		return gbkStr.getBytes(Charset.forName("GBK"));
+    	}
+    	return ZERO_BYTES;  
+    }
+    
+    /**
+     * 将字符串转为指定长度的GBK编码的字节数组（超过长度则右截）
+     * @param srcStr		待转换的源字符串
+     * @param fixedLen		指定长度	
+     * @param filledChar 	不足长度时填充的长度
+     * @param isFillLeft 	true:左填充
+     * @return
+     */
+    public static byte[] toFixedLenGBKBytes(String srcStr, int fixedLen, char filledChar, boolean isFillLeft) {
+    	return toGBKBytes(getFixedLenGBKStr(srcStr, fixedLen, filledChar, isFillLeft));
+    }
+    
+    /**
+     * 将字符串转为指定长度的GBK编码的字节数组(长度不足时后补0x00,超过长度则右截)
+     * @param srcStr		待转换的源字符串
+     * @param fixedLen		指定长度	 
+     * @return
+     */
+    public static byte[] toFixedLenGBKBytes(String srcStr, int fixedLen) {
+    	return toGBKBytes(getFixedLenGBKStr(srcStr, fixedLen, BLANK_CHAR, false));
+    }
+    
+    /**
      * 根据字节数组、格式化字符串，返回格式化的时间字符串
      * 示例：
      * 参数：new byte[]{0x20, 0x13, 0x01, 0x25, 0x10, 0x08, 0x09}, "%s%s-%s-%s %s:%s:%s"
@@ -1593,12 +1693,15 @@ public class KKTool {
     
     public static String getTelnetHelpContent() {
     	StringBuilder sBuilder = new StringBuilder("\r\n");
+    	sBuilder.append(KKTool.getFixedLenString("command", 15, ' ', false) + "| description\r\n");
+    	sBuilder.append(KKTool.getFixedLenString("", 15, '-', false) + "| " + KKTool.getFixedLenString("", 30, '-', false) + "\r\n");
     	sBuilder.append(KKTool.getFixedLenString(Const.TELNET_CMD_HELP, 15, ' ', false) + "| get help content\r\n");
     	sBuilder.append(KKTool.getFixedLenString(Const.TELNET_CMD_QUIT, 15, ' ', false) + "| close the connection\r\n");
     	sBuilder.append(KKTool.getFixedLenString(Const.TELNET_CMD_START_MAINLINK, 15, ' ', false) + "| notice the 809 server to start main link\r\n");
     	sBuilder.append(KKTool.getFixedLenString(Const.TELNET_CMD_END_MAINLINK, 15, ' ', false) + "| notice the 809 server to end main link\r\n");
     	sBuilder.append(KKTool.getFixedLenString(Const.TELNET_CMD_START_SUBLINK, 15, ' ', false) + "| notice the 809 server to start sub link\r\n");
     	sBuilder.append(KKTool.getFixedLenString(Const.TELNET_CMD_END_SUBLINK, 15, ' ', false) + "| notice the 809 server to end sub link\r\n");
+    	sBuilder.append(KKTool.getFixedLenString(Const.TELNET_CMD_LINK_STATUS, 15, ' ', false) + "| show main and sub link status\r\n");
     	return sBuilder.toString();
     }
     
@@ -1628,6 +1731,9 @@ public class KKTool {
 		case Const.RET_RES_LIMIT:
 			sRet = Const.SRET_RES_LIMIT;
 			break;
+		case Const.RET_OTHER:
+			sRet = Const.SRET_OTHER;
+			break;
 		default:
 			sRet = sRet + "[" + byteToHexStr(ret) + "]";
 			break;
@@ -1655,6 +1761,23 @@ public class KKTool {
     	return c;
     }
     
+    /**
+     * 由Date格式时间获取UTC格式时间
+     * @param date	
+     * @return
+     */
+    public static long getUTC(Date date) {
+		return date.getTime()/1000;
+	}
+    
+    /**
+     * 获取当前时间的UTC格式时间
+     * @return
+     */
+    public static long getCurrUTC() {
+    	return new Date().getTime()/1000;
+    }
+    
     public static void dd(Object object) {
     	if (object instanceof BufferedWriter) {
     		printLog("obj is writer");
@@ -1664,12 +1787,17 @@ public class KKTool {
     }
     
     public static void main(String[] args) {
-    	Calendar c = Calendar.getInstance();
-    	c = new GregorianCalendar();
-    	c.setTimeInMillis(1263085674000L);
-    	printLog(c.getTime());
-    	Date date = new Date(1263085674);
-    	printLog(date);
     }
     
+}
+
+class ThreadA implements Runnable {
+	
+	private int i = 0;
+
+	@Override
+	public void run() {
+		KKTool.printLog(i ++);
+	}
+	
 }
