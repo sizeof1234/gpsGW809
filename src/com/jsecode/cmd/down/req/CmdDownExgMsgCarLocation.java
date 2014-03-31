@@ -58,6 +58,11 @@ public class CmdDownExgMsgCarLocation extends CmdHeadSubBizWithCar{
 		return this.gnssData.getBeanSize();
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
     public GpsCmdBean getGnssData() {
         return gnssData;
     }

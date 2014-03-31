@@ -4,7 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -13,7 +15,6 @@ import java.util.Map.Entry;
 public class SysParams {
 	
 	private final static SysParams sysParams = new SysParams();
-
 	private KKConfig kkConfig;
 	
 	/* tcp相关 */
@@ -31,6 +32,8 @@ public class SysParams {
 	private String jdbcUrl;
 	private String dbUserName;
 	private String dbUserPass;
+	
+	private List<JDBCConfig> jdbcList;
 	
 	/* 与上级本平台对接时加密数据所需参数 */
 	private int gnssCenterId;//平台所需接入码
@@ -53,6 +56,7 @@ public class SysParams {
 		String configFilePath = "." + System.getProperty("file.separator")
 				+ "gw809.properties";
 		kkConfig = new KKConfig(configFilePath);
+		jdbcList = new ArrayList<JDBCConfig>();
 		this.loadSysParams();
 	}
 
@@ -73,10 +77,19 @@ public class SysParams {
 		this.ia1 = kkConfig.getIntValue("ia1");
 		this.ic1 = kkConfig.getIntValue("ic1");
 		
-		this.jdbcDriver = kkConfig.getStrValue("jdbcDriver");
-		this.jdbcUrl = kkConfig.getStrValue("jdbcUrl");
-		this.dbUserName = kkConfig.getStrValue("dbUserName");
-		this.dbUserPass = kkConfig.getStrValue("dbUserPass");
+		int jdbcCount = kkConfig.getIntValue("jdbcCount");
+		String jdbcName, jdbcDriver, jdbcUrl, dbUserName, dbUserPass = null;
+		for (int i = 0; i < jdbcCount; i ++) {
+			jdbcName = getDefaultStr(kkConfig.getStrValue("jdbcName" + (i + 1)), "jdbc" + (i + 1));
+			jdbcDriver = kkConfig.getStrValue("jdbcDriver" + (i + 1));
+			jdbcUrl = kkConfig.getStrValue("jdbcUrl" + (i + 1));
+			dbUserName = kkConfig.getStrValue("dbUserName" + (i + 1));
+			dbUserPass = kkConfig.getStrValue("dbUserPass" + (i + 1));
+			if (!isStringsNullOrEmpty(jdbcDriver, jdbcUrl, dbUserName, dbUserPass)) {
+				JDBCConfig jdbcConfig = new JDBCConfig(jdbcName, jdbcDriver, jdbcUrl, dbUserName, dbUserPass);
+				this.jdbcList.add(jdbcConfig);
+			}
+		}
 		
 		this.minVehicleNoGBKSize = kkConfig.getIntValue("minVehicleNoGBKSize");
 		this.maxVehicleNoGBKSize = kkConfig.getIntValue("maxVehicleNoGBKSize");
@@ -89,6 +102,18 @@ public class SysParams {
 		return expectedVal;
 	}
 
+	public static boolean isStringsNullOrEmpty(String... strs) {
+		if (strs != null) {
+			for (String s : strs) {
+				if (s == null || s.length() == 0) {
+					return true;
+				}
+			}
+			return false;
+		} 
+		return true;
+	}
+	
 	public String getMainLinkIp() {
 		return mainLinkIp;
 	}
@@ -167,6 +192,10 @@ public class SysParams {
 
 	public int getMaxVehicleNoGBKSize() {
 		return maxVehicleNoGBKSize;
+	}
+
+	public List<JDBCConfig> getJdbcListCopy() {
+		return new ArrayList<JDBCConfig>(jdbcList);
 	}
 
 }

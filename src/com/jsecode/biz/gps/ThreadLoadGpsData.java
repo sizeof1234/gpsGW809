@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import com.jsecode.cmd.bean.GpsBean;
+import com.jsecode.bean.GpsBean;
 import com.jsecode.db.DBOper;
 import com.jsecode.utils.KKLog;
 
@@ -41,7 +41,9 @@ public class ThreadLoadGpsData implements Runnable {
 		List<GpsBean> list = DBOper.getDBOper().queryCurrentGpsData(dbLastUpdateSysTime);
 		
 		addGpsDataToQueue(list);
-		KKLog.info("current load gps data count:" + list.size() + ",gps data send count:" + this.iSendGpsData.getGpsDataSendCount());
+		KKLog.info("current load gps data count:" + list.size() 
+				+ ",send count:" + this.iSendGpsData.getGpsDataSendCount()
+				+ ",unsend count:" + this.iSendGpsData.getUnSendGpsDataCount());
 	}
 	
 	private void addGpsDataToQueue(List<GpsBean> list) {

@@ -39,6 +39,11 @@ public class CmdUpDisconnectReq extends CmdHead {
 		channelBuffer.writeBytes(this.userPass);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public int getUserId() {
 		return userId;
 	}

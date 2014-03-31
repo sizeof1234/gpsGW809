@@ -41,6 +41,11 @@ public class CmdUpConnectReq extends CmdHead{
 		channelBuffer.writeShort(this.downLinkPort);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public int getUserId() {
 		return userId;
 	}

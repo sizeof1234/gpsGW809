@@ -57,6 +57,11 @@ public class CmdUpCtrlMsgTakePhotoAck extends CmdHeadSubBizWithCar {
 		channelBuffer.writeBytes(this.photoData);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public byte getPhotoRespFlag() {
 		return photoRespFlag;
 	}

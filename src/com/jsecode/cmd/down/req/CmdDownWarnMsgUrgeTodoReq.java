@@ -67,6 +67,11 @@ public class CmdDownWarnMsgUrgeTodoReq extends CmdHeadSubBizWithCar {
 		return 1+2+8+4+8+1+this.superVisor.length+this.superVisorTel.length+this.superVisorEmail.length;
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
     public byte getWarnSrc() {
         return warnSrc;
     }

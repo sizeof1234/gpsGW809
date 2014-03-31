@@ -41,6 +41,11 @@ public class CmdUpCtrlMsgTakeTravelAck extends CmdHeadSubBizWithCar {
 		channelBuffer.writeBytes(this.travelData);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public int getTravelDataSize() {
 		return travelDataSize;
 	}

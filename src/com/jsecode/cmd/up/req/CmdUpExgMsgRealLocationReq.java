@@ -38,6 +38,11 @@ public class CmdUpExgMsgRealLocationReq extends CmdHeadSubBizWithCar {
 		gpsBean.fillChannelBuffer(channelBuffer);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public GpsCmdBean getGpsBean() {
 		return gpsBean;
 	}

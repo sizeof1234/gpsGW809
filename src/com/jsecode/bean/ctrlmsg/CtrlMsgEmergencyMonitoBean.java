@@ -17,7 +17,8 @@ import java.io.Serializable;
  */
 public class CtrlMsgEmergencyMonitoBean implements Serializable {
 
-    private Long id; // 标识
+	private static final long serialVersionUID = 8771222842392044051L;
+	private Long id; // 标识
     private String vehicleNo; // 车牌号
     private String vehicleColor; // 车辆颜色
     private Long dataType; // 子业务类型标识

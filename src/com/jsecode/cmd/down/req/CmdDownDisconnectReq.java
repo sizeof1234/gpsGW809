@@ -50,6 +50,11 @@ public class CmdDownDisconnectReq extends CmdHead {
 	protected void fillCmdBody(ChannelBuffer channelBuffer) {
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public int getVerifyCode() {
 		return verifyCode;
 	}

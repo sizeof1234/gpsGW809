@@ -49,6 +49,11 @@ public class CmdUpWarnMsgAdptInfo extends CmdHeadSubBizWithCar {
 		channelBuffer.writeBytes(infoContent);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public byte getWarnSrc() {
 		return warnSrc;
 	}

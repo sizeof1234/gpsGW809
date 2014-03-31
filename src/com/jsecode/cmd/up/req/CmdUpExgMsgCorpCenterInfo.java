@@ -60,6 +60,11 @@ public class CmdUpExgMsgCorpCenterInfo extends CmdHeadSubBizWithoutCar {
 		channelBuffer.writeShort(this.port);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public int getInfoId() {
 		return infoId;
 	}

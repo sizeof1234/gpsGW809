@@ -56,6 +56,11 @@ public class CmdDownWarnMsgInformTips extends CmdHeadSubBizWithCar {
         return 1+2+8+4+this.warnLength;
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
     public byte getWarnSrc() {
         return warnSrc;
     }

@@ -43,4 +43,9 @@ public class CmdDownLinktestReq extends CmdHead {
 		return 0;
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 }

@@ -6,6 +6,7 @@ import com.jsecode.cmd.bean.GpsCmdBean;
 
 public interface ICmd {
 	
+	String EMPTY_STR = "";
 	byte[] ZERO_BYTES = new byte[0];
 	GpsCmdBean EMPTY_GPS_BEAN = new GpsCmdBean();
 
@@ -22,4 +23,10 @@ public interface ICmd {
 	 */
 	public ChannelBuffer getSendBuffer();
 	
+	/**
+	 * 获取命令存储数据库时需拼装的内容<br>
+	 * 由每个具体的命令类实现
+	 * @return
+	 */
+	public String getDBSaveContent();
 }

@@ -61,6 +61,11 @@ public class CmdDownExgMsgHistoryArcossarea extends CmdHeadSubBizWithCar {
 		return 1 + GpsCmdBean.getCmdBeanSize() * gnssDataList.size();
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
     public byte getGnssCnt() {
         return gnssCnt;
     }

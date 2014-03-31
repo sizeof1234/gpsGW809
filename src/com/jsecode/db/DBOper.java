@@ -22,15 +22,27 @@ import java.util.Date;
 import java.util.List;
 
 import com.jsecode.bean.DriverBean;
-import com.jsecode.cmd.bean.GpsBean;
-import com.jsecode.cmd.bean.TerminalBean;
+import com.jsecode.bean.GpsBean;
+import com.jsecode.bean.TerminalBean;
 import com.jsecode.bean.platform.PlatformMsgBean;
 import com.jsecode.bean.warnmsg.WarnMsgAdptInfoBean;
 import com.jsecode.bean.warnmsg.WarnMsgUrgeTodoReqBean;
-import com.jsecode.cmd.down.req.*;
+import com.jsecode.cmd.CmdHead;
+import com.jsecode.cmd.down.req.CmdDownCtrlMsgEmergencyMonitoringReq;
+import com.jsecode.cmd.down.req.CmdDownCtrlMsgMonitorVehicleReq;
+import com.jsecode.cmd.down.req.CmdDownCtrlMsgTakePhotoReq;
+import com.jsecode.cmd.down.req.CmdDownCtrlMsgTakeTravelReq;
+import com.jsecode.cmd.down.req.CmdDownCtrlMsgTextInfo;
+import com.jsecode.cmd.down.req.CmdDownPlatformMsgInfoReq;
+import com.jsecode.cmd.down.req.CmdDownPlatformMsgPostQueryReq;
+import com.jsecode.cmd.down.req.CmdDownWarnMsgExgInform;
+import com.jsecode.cmd.down.req.CmdDownWarnMsgInformTips;
+import com.jsecode.cmd.down.req.CmdDownWarnMsgUrgeTodoReq;
 import com.jsecode.utils.Const;
+import com.jsecode.utils.JDBCConfig;
 import com.jsecode.utils.KKLog;
 import com.jsecode.utils.KKTool;
+import com.jsecode.utils.SysParams;
 
 
 /**
@@ -39,16 +51,20 @@ import com.jsecode.utils.KKTool;
 public final class DBOper {
 
     private final static DBOper dbOper = new DBOper();
-    private DBConnPool dbConnPool;
-    private Class typeClass;
+    private DBConnPool masterPool;
 
     public synchronized static DBOper getDBOper() {
         return dbOper;
     }
 
     private DBOper() {
+    	List<JDBCConfig> jdbcList = SysParams.getInstance().getJdbcListCopy();
+    	if (jdbcList.size() <= 0) {
+    		KKLog.error("no jdbc config is set, please check");
+    		return;
+    	}
         try {
-            dbConnPool = DBConnPool.getInstance();
+        	masterPool = DBConnPools.getDbConnPool(jdbcList.get(0));
         } catch (ClassNotFoundException e) {
             KKLog.error("DBOper create ClassNotFoundException:" + e.getMessage());
         } catch (SQLException e) {
@@ -93,7 +109,7 @@ public final class DBOper {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = getConnection();
+            connection = getMasterConnection();
             statement = connection.prepareStatement(SQL.GET_DB_SYS_TIME);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -112,7 +128,7 @@ public final class DBOper {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = getConnection();
+            connection = getMasterConnection();
             statement = connection.prepareStatement("select status_updatetime, pos_time from host_curstatus where status_updatetime > ?");
             statement.setObject(1, new java.sql.Timestamp(new Date().getTime()));
             resultSet = statement.executeQuery();
@@ -134,7 +150,7 @@ public final class DBOper {
         Statement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = getConnection();
+            connection = getMasterConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(SQL.CAR_MAX_ROWSCN);
             while (resultSet.next()) {
@@ -154,7 +170,7 @@ public final class DBOper {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            connection = getConnection();
+            connection = getMasterConnection();
             pstmt = connection.prepareStatement(sql);
             if (paramsObj != null) {
                 for (int i = 0; i < paramsObj.length; i++) {
@@ -252,6 +268,15 @@ public final class DBOper {
         }
         return Const.EMPTY_STR;
     }
+    
+    /**
+     * 存储命令信息到数据库中
+     * @param cmdHead	命令父类，提取公共信息
+     * @return	true:存储成功
+     */
+    public boolean saveCmdInfoToDB(CmdHead cmdHead) {
+    	return false;
+    }
 /**********************************************平台间信息交互业务START*****************************************************************/
 
     /**
@@ -259,6 +284,7 @@ public final class DBOper {
      * @param cmdDownPlatformMsgPostQueryReq
      * @return
      */
+
     public int insertDownPlatformMsgPostQueryReq(CmdDownPlatformMsgPostQueryReq cmdDownPlatformMsgPostQueryReq){
         //平台查岗数据入库，供客户端展示
         Object [] paramsObj = new Object[8];
@@ -557,20 +583,15 @@ public final class DBOper {
 
 
 
-
-
-
-
-
     /**********************************************车辆监管业务类END*****************************************************************/
 
-    private Connection getConnection() throws SQLException {
-        return dbConnPool.getConnection();
+    private Connection getMasterConnection() throws SQLException {
+        return masterPool.getConnection();
     }
 
-    public void release() {
+    public static void release() {
         KKLog.info("释放数据库连接");
-        this.dbConnPool.shutDown();
+        DBConnPools.releasePools();
     }
 // **********************************************************数据库查询、保存操作********************************************************************
 
@@ -587,7 +608,7 @@ public final class DBOper {
         PreparedStatement statement = null;
         ResultSet rs = null;
         try {
-            connection = getConnection();
+            connection = getMasterConnection();
             statement = connection.prepareStatement(sql);
             if (paramsObj != null) {
                 // 注入参数
@@ -623,7 +644,7 @@ public final class DBOper {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = getConnection();
+            connection = getMasterConnection();
             statement = connection.prepareStatement(sql);
             // 注入参数
             for (int i = 0; i < paramsObj.length; i++) {
@@ -670,7 +691,7 @@ public final class DBOper {
         ResultSet rs = null;
 
         try {
-            connection = getConnection();
+            connection = getMasterConnection();
             pstmt = connection.prepareStatement(sql);
             // 注入参数
             if (paramsObj != null) {
@@ -727,7 +748,7 @@ public final class DBOper {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            connection = getConnection();
+            connection = getMasterConnection();
             pstmt = connection.prepareStatement(sql);
 
             if (paramsObj != null) {

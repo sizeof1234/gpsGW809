@@ -39,6 +39,11 @@ public class CmdUpExgMsgApplyHisGnssDataReq extends CmdHeadSubBizWithCar {
 		channelBuffer.writeLong(this.endTime);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public long getStartTime() {
 		return startTime;
 	}

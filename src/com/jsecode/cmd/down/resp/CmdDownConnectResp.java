@@ -53,6 +53,11 @@ public class CmdDownConnectResp extends CmdHead {
         KKLog.info("DOWN_CONNECT_RSP-----4.5.1.10从链路连接应答信息");
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
     public byte getResult() {
         return result;
     }

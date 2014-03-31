@@ -59,9 +59,9 @@ public final class Const {
 	public final static short UP_EXG_MSG_APPLY_FOR_MONITOR_END 			= 		 0x1208;//取消交换指定车辆定位信息请求
 	public final static short UP_EXG_MSG_APPLY_HISGNSSDATA_REQ 			= 		 0x1209;//补发车辆定位信息请求
 	public final static short UP_EXG_MSG_REPORT_DRIVER_INFO_ACK 		 	= 		 0x120A;//上报车辆驾驶员身份识别信息应答
-	public final static short UP_EXG_MSG_TAKE_EWAYBILL_ACK 				= 		  0x120B;//上报车辆电子运单应答
-	public final static short UP_EXG_MSG_REPORT_DRIVER_INFO 			 	= 		  0x120C;//主动上报驾驶员身份信息
-	public final static short UP_EXG_MSG_REPORT_EWAYBILL_INFO 			=         0x120D;//主动上报车辆电子运单信息
+	public final static short UP_EXG_MSG_TAKE_EWAYBILL_ACK 				= 		 0x120B;//上报车辆电子运单应答
+	public final static short UP_EXG_MSG_REPORT_DRIVER_INFO 			 	= 		 0x120C;//主动上报驾驶员身份信息
+	public final static short UP_EXG_MSG_REPORT_EWAYBILL_INFO 			=        0x120D;//主动上报车辆电子运单信息
 	public final static short DOWN_EXG_MSG_CAR_LOCATION 				 	= (short)0x9202;//交换车辆定位信息
 	public final static short DOWN_EXG_MSG_HISTORY_ARCOSSAREA 			= (short)0x9203;//车辆定位信息交换补发
 	public final static short DOWN_EXG_MSG_CAR_INFO 					 	= (short)0x9204;//交换车辆静态信息
@@ -72,8 +72,8 @@ public final class Const {
 	public final static short DOWN_EXG_MSG_APPLY_HISGNSSDATA_ACK 		 	= (short)0x9209;//补发车辆定位信息应答
 	public final static short DOWN_EXG_MSG_REPORT_DRIVER_INFO 			= (short)0x920A;//上报车辆驾驶员身份识别信息请求
 	public final static short DOWN_EXG_MSG_TAKE_EWAYBILL_REQ 			 	= (short)0x920B;//上报车辆电子运单请求
-	public final static short UP_PLATFORM_MSG_POST_QUERY_ACK 			 	=		  0x1301;//平台查岗应答
-	public final static short UP_PLATFORM_MSG_INFO_ACK 					=   	  0x1302;//下发平台间报文应答
+	public final static short UP_PLATFORM_MSG_POST_QUERY_ACK 			 	=		 0x1301;//平台查岗应答
+	public final static short UP_PLATFORM_MSG_INFO_ACK 					=   	 0x1302;//下发平台间报文应答
 	public final static short DOWN_PLATFORM_MSG_POST_QUERY_REQ 			= (short)0x9301;//平台查岗应答
 	public final static short DOWN_PLATFORM_MSG_INFO_REQ 				 	= (short)0x9302;//下发平台间报文应答
 	public final static short UP_WARN_MSG_URGE_TODO_ACK 				 	= 		 0x1401;//报警督办应答

@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 public class PlatformMsgBean implements Serializable {
 
-    private Long id; // 标识
+	private static final long serialVersionUID = -4209336505969019648L;
+	private Long id; // 标识
     private String reqType; // 请求类型, 01:平台查岗请求消息 02:上级平台下发平台间报文请求消息
     private Long dataType; // 子业务类型标识
     private int objectLength; // 后续数据长度

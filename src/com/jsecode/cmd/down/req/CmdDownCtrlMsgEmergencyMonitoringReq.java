@@ -63,6 +63,11 @@ public class CmdDownCtrlMsgEmergencyMonitoringReq extends CmdHeadSubBizWithCar {
 
     }
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+	
     public byte[] getAuthenicationCode() {
         return authenicationCode;
     }

@@ -30,6 +30,11 @@ public class CmdUpCloseLinkInform extends CmdHead {
 
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public byte getErrorCode() {
 		return errorCode;
 	}

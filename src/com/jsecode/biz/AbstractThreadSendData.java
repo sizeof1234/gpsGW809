@@ -21,13 +21,16 @@ public abstract class AbstractThreadSendData<T> extends Thread implements ISendD
 	
 	private IGW809 gw809;
 	private Object objNewData;
+	private Object objLinkConnected;
 	protected final Queue<T> queue;
 	
-	final static long DEFAULT_WAIT_TIME = 5 * 60 * 1000;
+	final static long DEFAULT_WAIT_NEW_DATA_TIME = 5 * 60 * 1000;
+	final static long DEFAULT_WAIT_LINK_CONNECTED_TIME = 5 * 1000;
 	
 	public AbstractThreadSendData (IGW809 gw809, String threadName) {
 		this.gw809 = gw809;
 		objNewData = new Object();
+		objLinkConnected = new Object();
 		queue = new ConcurrentLinkedQueue<T>();
 		if (!KKTool.isStrNullOrBlank(threadName)) {
 			this.setName(threadName);
@@ -55,12 +58,28 @@ public abstract class AbstractThreadSendData<T> extends Thread implements ISendD
 	 * 默认等待1分钟，或被提前唤醒
 	 */
 	protected void waitNewData() {
-		waitNewData(DEFAULT_WAIT_TIME);
+		waitNewData(DEFAULT_WAIT_NEW_DATA_TIME);
 	}
 
 	protected void noticeNewData() {
 		synchronized (objNewData) {
 			objNewData.notify();
+		}
+	}
+	
+	public void noticeLinkConnected() {
+		synchronized (objLinkConnected) {
+			objLinkConnected.notify();
+		}
+	}
+	
+	protected void waitLinkConnected() {
+		synchronized (objLinkConnected) {
+			try {
+				objLinkConnected.wait(3 * 1000);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
 		}
 	}
 	

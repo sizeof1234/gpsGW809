@@ -9,7 +9,7 @@ import java.util.Map;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
 
 import com.jsecode.bean.DriverBean;
-import com.jsecode.cmd.bean.TerminalBean;
+import com.jsecode.bean.TerminalBean;
 
 /**
  * 所有公共的变量集

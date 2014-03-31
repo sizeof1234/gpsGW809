@@ -31,4 +31,9 @@ public class CmdUpExgMsgReturnEndAck extends CmdHeadSubBizWithCar {
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 }

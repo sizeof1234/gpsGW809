@@ -132,6 +132,7 @@ public class GW809Server implements IGW809, ITelnetServer {
 		} else {
 			isSubLinkConnected = true;
 		}
+		threadSendGpsData.noticeLinkConnected();
 	}
 
 	@Override

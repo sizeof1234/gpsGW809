@@ -35,6 +35,11 @@ public class CmdCtrlMsgEmergencyMonitoringAck extends CmdHeadSubBizWithCar {
 		channelBuffer.writeByte(this.result);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public byte getResult() {
 		return result;
 	}

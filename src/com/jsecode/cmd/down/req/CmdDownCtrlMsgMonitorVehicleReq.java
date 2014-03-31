@@ -48,6 +48,11 @@ public class CmdDownCtrlMsgMonitorVehicleReq extends CmdHeadSubBizWithCar {
 		return this.monitorTel.length;
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+	
     public byte[] getMonitorTel() {
         return monitorTel;
     }

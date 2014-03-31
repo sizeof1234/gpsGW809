@@ -41,6 +41,11 @@ public class CmdUpExgMsgTakeEWayBillAck extends CmdHeadSubBizWithCar {
 		channelBuffer.writeBytes(eWayBillData);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public int geteWayBillDataSize() {
 		return eWayBillDataSize;
 	}

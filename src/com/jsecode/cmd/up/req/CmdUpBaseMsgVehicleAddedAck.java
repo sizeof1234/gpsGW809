@@ -36,6 +36,11 @@ public class CmdUpBaseMsgVehicleAddedAck extends CmdHeadSubBizWithCar {
 		channelBuffer.writeBytes(this.vehicleInfo);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public byte[] getVehicleInfo() {
 		return vehicleInfo;
 	}

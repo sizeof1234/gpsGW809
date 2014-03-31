@@ -26,4 +26,9 @@ public class CmdUpDisconnectResp extends CmdHead {
 	protected void fillCmdBody(ChannelBuffer channelBuffer) {
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 }

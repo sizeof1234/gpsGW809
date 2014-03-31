@@ -38,6 +38,11 @@ public class CmdUpWarnMsgUrgeTodoAck extends CmdHeadSubBizWithCar {
 		channelBuffer.writeByte(this.result);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public int getSupervisonId() {
 		return supervisonId;
 	}

@@ -19,7 +19,8 @@ import oracle.sql.BLOB;
  */
 public class CtrlMsgTakePhotoBean implements Serializable {
 
-    private Long id; // 标识
+	private static final long serialVersionUID = 4008953449014857805L;
+	private Long id; // 标识
     private String vehicleNo; // 车牌号
     private String vehicleColor; // 车辆颜色
     private Long dataType; // 子业务类型标识

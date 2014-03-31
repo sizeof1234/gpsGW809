@@ -50,6 +50,11 @@ public class CmdDownCloselinkInform extends CmdHead {
 		return 1;
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+	
 	public byte getReasonCode() {
 		return reasonCode;
 	}
@@ -57,4 +62,5 @@ public class CmdDownCloselinkInform extends CmdHead {
 	public void setReasonCode(byte reasonCode) {
 		this.reasonCode = reasonCode;
 	}
+
 }

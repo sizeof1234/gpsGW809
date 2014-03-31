@@ -54,6 +54,11 @@ public class CmdUpExgMsgRegisterReq extends CmdHeadSubBizWithCar {
 		channelBuffer.writeBytes(this.terminalSimCode);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public byte[] getPlatFormId() {
 		return platFormId;
 	}

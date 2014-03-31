@@ -137,12 +137,10 @@ public class TcpClient extends AbstractMainSubLink implements ITcpClient{
 		CmdUpConnectReq cmdUpConnectReq = new CmdUpConnectReq();
 		cmdUpConnectReq.setMsgFlagId(Const.UP_CONNECT_REQ);
 		cmdUpConnectReq.setUserId(sysParams.getUserId());
-		cmdUpConnectReq.setUserPass(KKTool.getFixedLenString(sysParams.getUserPass(), 8, Const.BLANK_CHAR, false).getBytes());
-		cmdUpConnectReq.setDownLinkIp(KKTool.getFixedLenString(sysParams.getSubLinkIp(), 32, Const.BLANK_CHAR, false).getBytes());
+		cmdUpConnectReq.setUserPass(KKTool.getFixedLenBytes(sysParams.getUserPass(), 8));
+		cmdUpConnectReq.setDownLinkIp(KKTool.getFixedLenBytes(sysParams.getSubLinkIp(), 32));
 		cmdUpConnectReq.setDownLinkPort(sysParams.getSubLinkPort());
 		this.sendData(cmdUpConnectReq.getSendBuffer());
-		
-
 	}
 
 	/**
@@ -152,7 +150,7 @@ public class TcpClient extends AbstractMainSubLink implements ITcpClient{
 		CmdUpDisconnectReq cmdUpDisconnectReq = new CmdUpDisconnectReq();
 		cmdUpDisconnectReq.setMsgFlagId(Const.UP_DISCONNECE_REQ);
 		cmdUpDisconnectReq.setUserId(sysParams.getUserId());
-		cmdUpDisconnectReq.setUserPass(KKTool.getFixedLenString(sysParams.getUserPass(), 8, Const.BLANK_CHAR, false).getBytes());
+		cmdUpDisconnectReq.setUserPass(KKTool.getFixedLenBytes(sysParams.getUserPass(), 8));
 		this.sendData(cmdUpDisconnectReq.getSendBuffer());
 	}
 
@@ -190,7 +188,7 @@ public class TcpClient extends AbstractMainSubLink implements ITcpClient{
 	@Override
 	public void disposeRecvData(ChannelBuffer buffer) {
 		this.setLastRecvDataTime(System.currentTimeMillis());
-		this.gw809.dispose809Data(buffer, this);
+		this.gw809.dispose809Data(KKTool.getUnescapedBuffer(buffer), this);
 	}
 
 	@Override

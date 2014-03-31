@@ -6,8 +6,8 @@ package com.jsecode.biz.driver;
 
 import com.jsecode.IGW809;
 import com.jsecode.bean.DriverBean;
+import com.jsecode.bean.TerminalBean;
 import com.jsecode.biz.AbstractThreadSendData;
-import com.jsecode.cmd.bean.TerminalBean;
 import com.jsecode.cmd.up.req.CmdUpExgMsgReportDriverInfo;
 import com.jsecode.utils.Const;
 import com.jsecode.utils.GlobalVar;

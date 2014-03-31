@@ -56,6 +56,11 @@ public class CmdDownPlatformMsgInfoReq extends CmdHeadSubBizWithoutCar {
 
     }
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
     public byte getObjectType() {
         return objectType;
     }

@@ -11,8 +11,24 @@ import java.util.List;
  */
 public interface ISendData<T> {
 
+	/**
+	 * 加入数据列表到待发送到队列中
+	 * @param list
+	 * @return
+	 */
 	boolean addListToQueue(List<T> list);
+	
+	/**
+	 * 加入单个数据到待发送队列中
+	 * @param t
+	 * @return
+	 */
 	boolean addSingleToQueue(T t);
+	
+	/**
+	 * 获取待发送队列当前长度
+	 * @return
+	 */
 	int getQueueSize();
 	
 }

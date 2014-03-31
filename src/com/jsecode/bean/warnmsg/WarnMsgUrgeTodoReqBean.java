@@ -18,7 +18,8 @@ import java.io.Serializable;
  * 修改备注：
  */
 public class WarnMsgUrgeTodoReqBean implements Serializable {
-    private Long id; // 标识
+	private static final long serialVersionUID = 5036453099897996273L;
+	private Long id; // 标识
     private String vehicleNo; // 车牌号
     private String vehicleColor; // 车辆颜色
     private Long dataType; // 子业务类型标识

@@ -34,4 +34,9 @@ public class CmdUpExgMsgReturnStartupAck extends CmdHeadSubBizWithCar {
 
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 }

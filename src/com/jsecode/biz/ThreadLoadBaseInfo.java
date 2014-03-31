@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import com.jsecode.bean.DriverBean;
-import com.jsecode.cmd.bean.TerminalBean;
+import com.jsecode.bean.TerminalBean;
 import com.jsecode.db.DBOper;
 import com.jsecode.utils.GlobalVar;
 

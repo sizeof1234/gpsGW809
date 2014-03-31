@@ -13,9 +13,9 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.jsecode.IGW809;
+import com.jsecode.bean.GpsBean;
+import com.jsecode.bean.TerminalBean;
 import com.jsecode.biz.AbstractThreadSendData;
-import com.jsecode.cmd.bean.GpsBean;
-import com.jsecode.cmd.bean.TerminalBean;
 import com.jsecode.cmd.up.req.CmdUpExgMsgHistoryLocationReq;
 import com.jsecode.cmd.up.req.CmdUpExgMsgRealLocationReq;
 import com.jsecode.cmd.up.req.CmdUpExgMsgRegisterReq;
@@ -29,7 +29,6 @@ import com.jsecode.utils.SysParams;
 public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implements ISendGpsData<GpsBean> {
 	
 	private SysParams sysParams;
-	private Object objLinkConnected = new Object();
 	private final Map<String, Long> vehicleNoTimeMap;
 	private final Date dbLastUpdateSysTime;
 	private long gpsDataSendCount = 0L;
@@ -55,17 +54,18 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 		while (!isInterrupted()) {
 			sendHisGpsData();
 			
-			boolean isLinkConnected = false;
-			while((gpsBean = queue.peek()) != null) {
+			boolean isLinkConnected = true;
+			while((gpsBean = queue.poll()) != null) {
 				if (!isVehicleNoValid(gpsBean) || isDataRepeated(gpsBean) || !isLonLatValid(gpsBean.getLon(), gpsBean.getLat())) {
-					this.queue.poll();
 					continue;
 				}
 				
 				isLinkConnected = sendGpsData(gpsBean);
 				if (isLinkConnected) {
 					this.gpsDataSendCount ++;
-					this.queue.poll();
+					if (this.gpsList.size() > 0 || this.queueForLinkDisconnected.size() > 0) {
+						sendHisGpsData();//send his gps data when link connected
+					}
 				} else {
 					if (this.queueForLinkDisconnected.size() >= QUEUE_LIMIT_SIZE) {
 						this.queueForLinkDisconnected.poll();
@@ -87,8 +87,13 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 	 * 补报车辆定位信息,按协议要求最多每5条一发
 	 */
 	private void sendHisGpsData() {
-		if (!sendGpsDataList(gpsList)) {
-			return;
+		if (gpsList.size() > 0) {
+			if (sendGpsDataList(gpsList)) {
+				this.gpsDataSendCount += gpsList.size();
+				gpsList.clear();
+			} else {
+				return;
+			}
 		}
 		GpsBean gpsBean = null;
 		boolean isLinkDisconnected = false;
@@ -96,6 +101,7 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 			gpsList.add(gpsBean);
 			if (gpsList.size() >= 5) {
 				if (sendGpsDataList(gpsList)) {
+					this.gpsDataSendCount += gpsList.size();
 					gpsList.clear();
 				} else {
 					isLinkDisconnected = true;
@@ -184,14 +190,14 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 		IMainSubLink link = getMainLink(true);
 		if (link.isChannelConnected()) {
 			CmdUpExgMsgRegisterReq cmdUpExgMsgRegisterReq = new CmdUpExgMsgRegisterReq();
-			cmdUpExgMsgRegisterReq.setMsgFlagId(Const.UP_EXG_MSG);
 			cmdUpExgMsgRegisterReq.setSubMsgId(Const.UP_EXG_MSG_REGISTER);
+			cmdUpExgMsgRegisterReq.setMsgFlagId(Const.UP_EXG_MSG);
 			
-			byte[] vehicleNo = KKTool.getFixedLenString(terminal.getHostNo(), 21, Const.BLANK_CHAR, false).getBytes();
-			byte[] producerId = KKTool.getFixedLenString(terminal.getProducerId(), 11, Const.BLANK_CHAR, false).getBytes();
-			byte[] terminalModelType = KKTool.getFixedLenString(terminal.getModelType(), 20, Const.BLANK_CHAR, false).getBytes();
-			byte[] terminalId = KKTool.getFixedLenString(terminal.getId(), 7, '0', true).getBytes();
-			byte[] simNo = KKTool.getFixedLenString(terminal.getSimNo(), 12, '0', true).getBytes();
+			byte[] vehicleNo = KKTool.toFixedLenGBKBytes(terminal.getHostNo(), 21);
+			byte[] producerId = KKTool.getFixedLenBytes(terminal.getProducerId(), 11);
+			byte[] terminalModelType = KKTool.getFixedLenBytes(terminal.getModelType(), 20);
+			byte[] terminalId = KKTool.getFixedLenBytes(terminal.getId(), 7, '0', true);
+			byte[] simNo = KKTool.getFixedLenBytes(terminal.getSimNo(), 12, '0', true);
 			cmdUpExgMsgRegisterReq.setVehicleNo(vehicleNo);
 			cmdUpExgMsgRegisterReq.setVehicleColor(terminal.getHostPlateColor());
 			cmdUpExgMsgRegisterReq.setPlatFormId(null);
@@ -205,6 +211,11 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 		return false;
 	}
 	
+	/**
+	 * 发送实时定位数据
+	 * @param gpsBean
+	 * @return true:链路未断开
+	 */
 	private boolean sendGpsData(GpsBean gpsBean) {
 		IMainSubLink link = getMainLink(true);
 		if (link.isChannelConnected()) {
@@ -220,23 +231,6 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 		return false;
 	}
 
-	public void noticeLinkConnected() {
-		synchronized (objLinkConnected) {
-			objLinkConnected.notify();
-		}
-	}
-	
-	private void waitLinkConnected() {
-		synchronized (objLinkConnected) {
-			try {
-				objLinkConnected.wait(3 * 1000);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
-		}
-	}
-
-	
 	@Override
 	public Date getDBLastUpdateSysTime() {
 		return this.dbLastUpdateSysTime;
@@ -245,4 +239,10 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 	public long getGpsDataSendCount() {
 		return this.gpsDataSendCount;
 	}
+
+	@Override
+	public int getUnSendGpsDataCount() {
+		return this.queueForLinkDisconnected.size() + this.gpsList.size();
+	}
+	
 }

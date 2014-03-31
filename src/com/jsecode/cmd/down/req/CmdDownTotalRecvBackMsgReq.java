@@ -55,6 +55,11 @@ public class CmdDownTotalRecvBackMsgReq extends CmdHead {
 		return 4+8+8;
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
     public int getDynamicInfoTotal() {
         return dynamicInfoTotal;
     }

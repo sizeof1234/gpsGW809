@@ -37,6 +37,11 @@ public class CmdUpCtrlMsgTextInfoAck extends CmdHeadSubBizWithCar {
 		channelBuffer.writeByte(this.result);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public int getMsgId() {
 		return msgId;
 	}

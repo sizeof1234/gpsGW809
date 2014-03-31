@@ -57,6 +57,10 @@ public class CmdDownPlatformMsgPostQueryReq extends CmdHeadSubBizWithoutCar {
         return 1 + this.objectId.length + 4 + 4 + this.infoLength;
     }
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
 
     public byte getObjectType() {
         return objectType;

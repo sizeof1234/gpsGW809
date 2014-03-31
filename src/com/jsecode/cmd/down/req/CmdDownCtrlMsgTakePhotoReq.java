@@ -50,6 +50,11 @@ public class CmdDownCtrlMsgTakePhotoReq extends CmdHeadSubBizWithCar {
 		return 1+1;
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
     public byte getLensId() {
         return lensId;
     }

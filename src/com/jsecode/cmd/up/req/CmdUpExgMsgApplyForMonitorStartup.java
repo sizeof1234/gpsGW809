@@ -39,6 +39,11 @@ public class CmdUpExgMsgApplyForMonitorStartup extends CmdHeadSubBizWithCar {
 		channelBuffer.writeLong(endTime);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public long getStartTime() {
 		return startTime;
 	}

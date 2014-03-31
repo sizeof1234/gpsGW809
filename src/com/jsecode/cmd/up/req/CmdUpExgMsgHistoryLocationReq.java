@@ -50,6 +50,11 @@ public class CmdUpExgMsgHistoryLocationReq extends CmdHeadSubBizWithCar {
 			gpsBean.fillChannelBuffer(channelBuffer);
 		}
 	}
+
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
 	
 	public void addGpsData(GpsCmdBean gpsBean) {
 		if (gpsBean != null) {

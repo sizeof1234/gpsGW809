@@ -54,6 +54,11 @@ public class CmdDownCtrlMsgTextInfo extends CmdHeadSubBizWithCar {
 		return 4+1+4+this.msgLength;
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
     public int getMsgSequnce() {
         return msgSequnce;
     }

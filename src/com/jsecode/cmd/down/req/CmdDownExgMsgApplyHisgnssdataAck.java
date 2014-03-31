@@ -43,6 +43,11 @@ public class CmdDownExgMsgApplyHisgnssdataAck extends CmdHeadSubBizWithCar {
 		return 1;
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
     public byte getResult() {
         return result;
     }

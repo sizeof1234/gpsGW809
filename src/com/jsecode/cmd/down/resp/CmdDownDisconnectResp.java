@@ -50,4 +50,9 @@ public class CmdDownDisconnectResp extends CmdHead {
         KKLog.info("DOWN_DISCONNECT_RSP------4.5.1.12从链路注销应答消息");
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 }

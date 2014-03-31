@@ -48,6 +48,11 @@ public class CmdDownExgMsgCarInfo extends CmdHeadSubBizWithCar{
 		return this.carInfo.length;
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
     public byte[] getCarInfo() {
         return carInfo;
     }

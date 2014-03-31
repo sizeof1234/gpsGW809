@@ -4,7 +4,6 @@
  */
 package com.jsecode.utils;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -1362,7 +1361,6 @@ public class KKTool {
     	closeConnectionInSilence(connection);
     }
     
-    
     /**
      * 关闭Writer不提示异常
      * @param writer
@@ -1438,6 +1436,40 @@ public class KKTool {
 	    	}
     	}
     	return sBuilder.toString();
+    }
+
+    /**
+     * 根据提供的字符串及填充字符串生成固定长度的字符串<br>
+     * 长度不足时默认右补\0
+     * @param srcStr
+     * @param fixedLen
+     * @return
+     */
+    public static String getFixedLenString(String srcStr, int fixedLen) {
+    	return getFixedLenString(srcStr, fixedLen, BLANK_CHAR, false);
+    }
+
+    /**
+     * 根据提供的字符串及填充字符串生成固定长度的字符串,并转成相应字节数组
+     * @param srcStr	原字符串
+     * @param fixedLen  固定长度
+     * @param filledChar填充字符
+     * @param isFillLeft左填充或右填充  true:左  false:右 
+     * @return
+     */
+    public static byte[] getFixedLenBytes(String srcStr, int fixedLen, char filledChar, boolean isFillLeft) {
+    	return getFixedLenString(srcStr, fixedLen, filledChar, isFillLeft).getBytes();
+    }
+
+    /**
+     * 根据提供的字符串生成固定长度的字符串,并转成相应字节数组<br>
+     * 长度不足时默认右补\0
+     * @param srcStr
+     * @param fixedLen
+     * @return
+     */
+    public static byte[] getFixedLenBytes(String srcStr, int fixedLen) {
+    	return getFixedLenString(srcStr, fixedLen, BLANK_CHAR, false).getBytes();
     }
     
     /**
@@ -1691,6 +1723,10 @@ public class KKTool {
     	return EMPTY_BUFFER;
     }
     
+    /**
+     * 获取telnet服务帮助内容
+     * @return
+     */
     public static String getTelnetHelpContent() {
     	StringBuilder sBuilder = new StringBuilder("\r\n");
     	sBuilder.append(KKTool.getFixedLenString("command", 15, ' ', false) + "| description\r\n");
@@ -1740,6 +1776,7 @@ public class KKTool {
 		}
     	return sRet;
     }
+    
 
     /**
      * 根据UTC时间获取日期
@@ -1749,6 +1786,7 @@ public class KKTool {
     public static Date getDateFromUTC(long utc) {
     	return getCalendarFromUTC(utc).getTime();
     }
+    
     
     /**
      * 根据UTC时间获取日历
@@ -1761,6 +1799,7 @@ public class KKTool {
     	return c;
     }
     
+    
     /**
      * 由Date格式时间获取UTC格式时间
      * @param date	
@@ -1770,6 +1809,7 @@ public class KKTool {
 		return date.getTime()/1000;
 	}
     
+    
     /**
      * 获取当前时间的UTC格式时间
      * @return
@@ -1778,26 +1818,8 @@ public class KKTool {
     	return new Date().getTime()/1000;
     }
     
-    public static void dd(Object object) {
-    	if (object instanceof BufferedWriter) {
-    		printLog("obj is writer");
-    	} else if (object instanceof RandomAccessFile) {
-    		printLog("obj is raf");
-    	}
-    }
-    
+
     public static void main(String[] args) {
     }
     
-}
-
-class ThreadA implements Runnable {
-	
-	private int i = 0;
-
-	@Override
-	public void run() {
-		KKTool.printLog(i ++);
-	}
-	
 }

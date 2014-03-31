@@ -52,6 +52,11 @@ public class CmdDownDisconnectInform extends CmdHead {
 	protected int getCmdBodySize() {
 		return 1;
 	}
+
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
 	
 	public byte getErrorCode() {
 		return errorCode;

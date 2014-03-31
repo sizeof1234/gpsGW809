@@ -35,6 +35,11 @@ public class CmdUpPlatFormMsgInfoAck extends CmdHeadSubBizWithoutCar {
 		channelBuffer.writeInt(this.infoId);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public int getInfoId() {
 		return infoId;
 	}

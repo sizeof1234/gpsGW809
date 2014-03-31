@@ -44,4 +44,9 @@ public class CmdDownExgMsgReportDriverInfo extends CmdHeadSubBizWithCar {
 		return 0;
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 }

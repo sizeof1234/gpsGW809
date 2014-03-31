@@ -18,7 +18,8 @@ import java.io.Serializable;
  * 修改备注：
  */
 public class WarnMsgAdptInfoBean  implements Serializable{
-    private Long id; // 标识
+	private static final long serialVersionUID = -3060021957243034823L;
+	private Long id; // 标识
     private String reqType; // 请求类型：01报警预警消息 ，02实时交换报警信息消息
     private String vehicleNo; // 车牌号
     private String vehicleColor; // 车辆颜色

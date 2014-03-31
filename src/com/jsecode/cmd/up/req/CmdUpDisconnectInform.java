@@ -39,6 +39,11 @@ public class CmdUpDisconnectInform extends CmdHead {
 		channelBuffer.writeByte(this.errorCode);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public byte getErrorCode() {
 		return errorCode;
 	}

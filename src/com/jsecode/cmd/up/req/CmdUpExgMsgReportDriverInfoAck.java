@@ -49,6 +49,11 @@ public class CmdUpExgMsgReportDriverInfoAck extends CmdHeadSubBizWithCar {
 		channelBuffer.writeBytes(this.orgName);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public byte[] getDriverName() {
 		return driverName;
 	}

@@ -48,6 +48,11 @@ public class CmdUpPlatFormMsgPostQueryAck extends CmdHeadSubBizWithoutCar {
 		channelBuffer.writeBytes(this.infoContent);
 	}
 
+	@Override
+	public String getDBSaveContent() {
+		return EMPTY_STR;
+	}
+
 	public byte getObjectType() {
 		return objectType;
 	}
