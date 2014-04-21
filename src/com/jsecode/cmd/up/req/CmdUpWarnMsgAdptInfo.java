@@ -35,6 +35,13 @@ public class CmdUpWarnMsgAdptInfo extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.warnSrc = channelBuffer.readByte();
+		this.warnType = channelBuffer.readShort();
+		this.warnTime = channelBuffer.readLong();
+		this.infoId = channelBuffer.readInt();
+		this.infoSize = channelBuffer.readInt();
+		this.infoContent = new byte[this.infoSize];
+		channelBuffer.readBytes(this.infoContent);
 	}
 
 	@Override

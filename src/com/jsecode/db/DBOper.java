@@ -24,6 +24,7 @@ import java.util.List;
 import com.jsecode.bean.DriverBean;
 import com.jsecode.bean.GpsBean;
 import com.jsecode.bean.TerminalBean;
+import com.jsecode.bean.TerminalCmdBean;
 import com.jsecode.bean.platform.PlatformMsgBean;
 import com.jsecode.bean.warnmsg.WarnMsgAdptInfoBean;
 import com.jsecode.bean.warnmsg.WarnMsgUrgeTodoReqBean;
@@ -271,12 +272,17 @@ public final class DBOper {
     
     /**
      * 存储命令信息到数据库中
-     * @param cmdHead	命令父类，提取公共信息
+     * @param cmd	命令父类，提取公共信息
      * @return	true:存储成功
      */
-    public boolean saveCmdInfoToDB(CmdHead cmdHead) {
+    public boolean saveCmdInfoToDB(CmdHead cmd) {
     	return false;
     }
+    
+    public List<TerminalCmdBean> getTerminalCmdList(Date dbLastSysTime) {
+    	return null;
+    }
+    
 /**********************************************平台间信息交互业务START*****************************************************************/
 
     /**
@@ -284,7 +290,6 @@ public final class DBOper {
      * @param cmdDownPlatformMsgPostQueryReq
      * @return
      */
-
     public int insertDownPlatformMsgPostQueryReq(CmdDownPlatformMsgPostQueryReq cmdDownPlatformMsgPostQueryReq){
         //平台查岗数据入库，供客户端展示
         Object [] paramsObj = new Object[8];

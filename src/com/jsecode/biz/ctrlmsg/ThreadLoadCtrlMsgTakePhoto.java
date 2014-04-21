@@ -1,6 +1,6 @@
 package com.jsecode.biz.ctrlmsg;
 
-import com.jsecode.biz.ISendData;
+import com.jsecode.biz.IAddDataToQueue;
 import com.jsecode.bean.ctrlmsg.CtrlMsgTakePhotoBean;
 
 import java.util.List;
@@ -20,9 +20,9 @@ import java.util.concurrent.CountDownLatch;
  * 修改备注：
  */
 public class ThreadLoadCtrlMsgTakePhoto  implements Runnable{
-    private ISendData<CtrlMsgTakePhotoBean> sendData;
+    private IAddDataToQueue<CtrlMsgTakePhotoBean> sendData;
     private CountDownLatch dataLoadSignal;
-    public ThreadLoadCtrlMsgTakePhoto(ISendData<CtrlMsgTakePhotoBean> sendData,CountDownLatch dataLoadSignal){
+    public ThreadLoadCtrlMsgTakePhoto(IAddDataToQueue<CtrlMsgTakePhotoBean> sendData,CountDownLatch dataLoadSignal){
         this.sendData=sendData;
         this.dataLoadSignal=dataLoadSignal;
     }

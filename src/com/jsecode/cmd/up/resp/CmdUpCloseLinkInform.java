@@ -27,7 +27,7 @@ public class CmdUpCloseLinkInform extends CmdHead {
 
 	@Override
 	protected void fillCmdBody(ChannelBuffer channelBuffer) {
-
+		channelBuffer.writeByte(this.errorCode);
 	}
 
 	@Override

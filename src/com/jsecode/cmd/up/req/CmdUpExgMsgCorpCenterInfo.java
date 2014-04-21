@@ -46,6 +46,14 @@ public class CmdUpExgMsgCorpCenterInfo extends CmdHeadSubBizWithoutCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.infoId = channelBuffer.readInt();
+		channelBuffer.readBytes(this.platFormId);
+		channelBuffer.readBytes(this.userName);
+		channelBuffer.readBytes(this.corpName);
+		this.logInOut = channelBuffer.readByte();
+		this.operTime = channelBuffer.readLong();
+		channelBuffer.readBytes(this.ip);
+		this.port = channelBuffer.readShort();
 	}
 
 	@Override

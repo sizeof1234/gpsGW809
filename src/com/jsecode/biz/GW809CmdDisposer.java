@@ -11,6 +11,7 @@ import org.jboss.netty.buffer.ChannelBuffer;
 
 import com.jsecode.IGW809;
 import com.jsecode.bean.DriverBean;
+import com.jsecode.cmd.CmdHead;
 import com.jsecode.cmd.bean.GpsCmdBean;
 import com.jsecode.cmd.down.req.CmdDownBaseMsgVehicleAdded;
 import com.jsecode.cmd.down.req.CmdDownCloselinkInform;
@@ -64,10 +65,12 @@ import com.jsecode.utils.KKTool;
 public final class GW809CmdDisposer {
 
 	private IGW809 gw809;
+	private IAddDataToQueue<CmdHead> iAddData;
 	private DBOper dbOper;
 
-	public GW809CmdDisposer(IGW809 gw809) {
+	public GW809CmdDisposer(IGW809 gw809, IAddDataToQueue<CmdHead> iAddData) {
 		this.gw809 = gw809;
+		this.iAddData = iAddData;
 		this.dbOper = DBOper.getDBOper();
 	}
 
@@ -153,7 +156,7 @@ public final class GW809CmdDisposer {
 	private void dealCmdUpLinkTestRsp(ChannelBuffer channelBuffer, IMainSubLink link) {
 		CmdUpLinkTestResp cmdUpLinkTestResp = new CmdUpLinkTestResp();
 		if (cmdUpLinkTestResp.disposeData(channelBuffer)) {
-			KKLog.debug("main link response");
+			KKLog.info("main link heartbeat response");
 		}
 	}
 
@@ -172,6 +175,7 @@ public final class GW809CmdDisposer {
 			cmdDownConnectResp.setMsgFlagId(Const.UP_CONNECT_RSP);
 			cmdDownConnectResp.setResult(ret);
 			sendFromSubLink(false, cmdDownConnectResp.getSendBuffer());
+			KKLog.info("sub link connect request");
 		}
 	}
 
@@ -182,6 +186,7 @@ public final class GW809CmdDisposer {
 			CmdDownDisconnectResp cmdDownDisconnectResp = new CmdDownDisconnectResp();
 			cmdDownDisconnectResp.setMsgFlagId(Const.DOWN_DISCONNECT_RSP);
 			sendFromSubLink(true, cmdDownDisconnectResp.getSendBuffer());
+			KKLog.info("sub link disconnect request");
 		}
 	}
 
@@ -192,6 +197,7 @@ public final class GW809CmdDisposer {
 			CmdDownLinktestResp cmdDownLinktestResp = new CmdDownLinktestResp();
 			cmdDownLinktestReq.setMsgFlagId(Const.DOWN_LINKTEST_RSP);
 			sendFromSubLink(true, cmdDownLinktestResp.getSendBuffer());
+			KKLog.info("sub link heartbeat");
 		}
 	}
 
@@ -320,6 +326,7 @@ public final class GW809CmdDisposer {
 					+ ",lon=" + gpsCmdBean.getLon() + ",lat=" + gpsCmdBean.getLat() + "]");
 
 			// TODO the gps data to database or send to memcached
+			this.iAddData.addSingleToQueue(cmdDownExgMsgCarLocation);
 		}
 	}
 
@@ -331,6 +338,7 @@ public final class GW809CmdDisposer {
 			KKLog.info("recv gps his data:[" + cmdDownExgMsgHistoryArcossarea.getVehicleNoStr() + ", size:" + gpsList.size() + "]");
 
 			// TODO save the gps data list to database or send to memcached
+			this.iAddData.addSingleToQueue(cmdDownExgMsgHistoryArcossarea);
 		}
 	}
 
@@ -341,14 +349,16 @@ public final class GW809CmdDisposer {
 			KKLog.info("recv car info:" + KKTool.toGBKStr(cmdDownExgMsgCarInfo.getCarInfo()));
 
 			// TODO save the car info to database or send to memcached
+			this.iAddData.addSingleToQueue(cmdDownExgMsgCarInfo);
 		}
 	}
 
-	// 启动车辆定位信息交换请求
-	private void dealCmdDownExgMsgReturnStartup(ChannelBuffer channelBuffer, IMainSubLink link) {
-		CmdDownExgMsgReturnStartup cmdDownExgMsgReturnStartup = new CmdDownExgMsgReturnStartup();
-		if (cmdDownExgMsgReturnStartup.disposeData(channelBuffer)) {
-			//TODO save this command to database or send to memcached
+    // 启动车辆定位信息交换请求
+    private void dealCmdDownExgMsgReturnStartup(ChannelBuffer channelBuffer, IMainSubLink link) {
+        CmdDownExgMsgReturnStartup cmdDownExgMsgReturnStartup = new CmdDownExgMsgReturnStartup();
+        if (cmdDownExgMsgReturnStartup.disposeData(channelBuffer)) {
+            //TODO save this command to database or send to memcached
+            this.iAddData.addSingleToQueue(cmdDownExgMsgReturnStartup);
 
 			CmdUpExgMsgReturnStartupAck cmdUpExgMsgReturnStartupAck = new CmdUpExgMsgReturnStartupAck();
 			cmdUpExgMsgReturnStartupAck.setMsgFlagId(Const.UP_EXG_MSG);
@@ -368,6 +378,7 @@ public final class GW809CmdDisposer {
 		CmdDownExgMsgReturnEnd cmdDownExgMsgReturnEnd = new CmdDownExgMsgReturnEnd();
 		if (cmdDownExgMsgReturnEnd.disposeData(channelBuffer)) {
 			//TODO save this command to database or send to memcached
+			this.iAddData.addSingleToQueue(cmdDownExgMsgReturnEnd);
 
 			CmdUpExgMsgReturnEndAck cmdUpExgMsgReturnEndAck = new CmdUpExgMsgReturnEndAck();
 			cmdUpExgMsgReturnEndAck.setMsgFlagId(Const.UP_EXG_MSG);
@@ -387,6 +398,7 @@ public final class GW809CmdDisposer {
 		CmdDownExgMsgApplyForMonitorStartupAck cmdDownExgMsgApplyForMonitorStartupAck = new CmdDownExgMsgApplyForMonitorStartupAck();
 		if (cmdDownExgMsgApplyForMonitorStartupAck.disposeData(channelBuffer)) {
 			//TODO send command result to database or send to memcached
+			this.iAddData.addSingleToQueue(cmdDownExgMsgApplyForMonitorStartupAck);
 
 			KKLog.info("recv exg msg apply for monitor startup ack:[" + cmdDownExgMsgApplyForMonitorStartupAck.getVehicleNoStr()
 					+ ",result code:" + KKTool.byteToHexStr(cmdDownExgMsgApplyForMonitorStartupAck.getResult()) + "]");
@@ -398,6 +410,7 @@ public final class GW809CmdDisposer {
 		CmdDownExgMsgApplyForMonitorEndAck cmdDownExgMsgApplyForMonitorEndAck = new CmdDownExgMsgApplyForMonitorEndAck();
 		if (cmdDownExgMsgApplyForMonitorEndAck.disposeData(channelBuffer)) {
 			//TODO send command result to database or send to memcached
+			this.iAddData.addSingleToQueue(cmdDownExgMsgApplyForMonitorEndAck);
 
 			KKLog.info("recv exg msg apply for monitor end ack:[" + cmdDownExgMsgApplyForMonitorEndAck.getVehicleNoStr()
 					+ ",result code:" + KKTool.byteToHexStr(cmdDownExgMsgApplyForMonitorEndAck.getResult()) + "]");
@@ -409,6 +422,7 @@ public final class GW809CmdDisposer {
 		CmdDownExgMsgApplyHisgnssdataAck cmdDownExgMsgApplyHisgnssdataAck = new CmdDownExgMsgApplyHisgnssdataAck();
 		if (cmdDownExgMsgApplyHisgnssdataAck.disposeData(channelBuffer)) {
 			//TODO send command result to database or send to memcached
+			this.iAddData.addSingleToQueue(cmdDownExgMsgApplyHisgnssdataAck);
 
 			KKLog.info("recv exg msg apply his gnss data ack:[" + cmdDownExgMsgApplyHisgnssdataAck.getVehicleNoStr()
 					+ ",result code:" + KKTool.byteToHexStr(cmdDownExgMsgApplyHisgnssdataAck.getResult()) + "]");
@@ -458,21 +472,24 @@ public final class GW809CmdDisposer {
 	private void dealCmdDownPlatformMsgPostQueryReq(ChannelBuffer channelBuffer, IMainSubLink link) {
 		CmdDownPlatformMsgPostQueryReq cmdDownPlatformMsgPostQueryReq = new CmdDownPlatformMsgPostQueryReq();
 		if (cmdDownPlatformMsgPostQueryReq.disposeData(channelBuffer)) {
-            DBOper.getDBOper().insertDownPlatformMsgPostQueryReq(cmdDownPlatformMsgPostQueryReq);
+            //TODO save this command to database or send to memcached
+            this.iAddData.addSingleToQueue(cmdDownPlatformMsgPostQueryReq);
         }
 	}
 	//下发平台间报文请求
 	private void dealCmdDownPlatformMsgInfoReq(ChannelBuffer channelBuffer, IMainSubLink link) {
 		CmdDownPlatformMsgInfoReq cmdDownPlatformMsgInfoReq = new CmdDownPlatformMsgInfoReq();
 		if (cmdDownPlatformMsgInfoReq.disposeData(channelBuffer)) {
-            DBOper.getDBOper().insertDownPlatformMsgInfoReq(cmdDownPlatformMsgInfoReq);
+            //TODO save this command to database or send to memcached
+            this.iAddData.addSingleToQueue(cmdDownPlatformMsgInfoReq);
         }
 	}
 	//报警督办请求
 	private void dealCmdDownWarnMsgUrgeTodoReq(ChannelBuffer channelBuffer, IMainSubLink link) {
 		CmdDownWarnMsgUrgeTodoReq cmdDownWarnMsgUrgeTodoReq = new CmdDownWarnMsgUrgeTodoReq();
 		if (cmdDownWarnMsgUrgeTodoReq.disposeData(channelBuffer)) {
-            DBOper.getDBOper().insertDownWarnMsgUrgeTodo(cmdDownWarnMsgUrgeTodoReq);
+            //TODO save this command to database or send to memcached
+            this.iAddData.addSingleToQueue(cmdDownWarnMsgUrgeTodoReq);
         }
 	}
 
@@ -480,7 +497,8 @@ public final class GW809CmdDisposer {
 	private void dealCmdDownWarnMsgInformTips(ChannelBuffer channelBuffer, IMainSubLink link) {
 		CmdDownWarnMsgInformTips cmdDownWarnMsgInformTips = new CmdDownWarnMsgInformTips();
 		if (cmdDownWarnMsgInformTips.disposeData(channelBuffer)) {
-            DBOper.getDBOper().insertDownWarnMsgInformTips(cmdDownWarnMsgInformTips);
+            //TODO save this command to database or send to memcached
+            this.iAddData.addSingleToQueue(cmdDownWarnMsgInformTips);
 		}
 	}
 
@@ -488,7 +506,8 @@ public final class GW809CmdDisposer {
 	private void dealCmdDownWarnMsgExgInform(ChannelBuffer channelBuffer, IMainSubLink link) {
 		CmdDownWarnMsgExgInform cmdDownWarnMsgExgInform = new CmdDownWarnMsgExgInform();
 		if (cmdDownWarnMsgExgInform.disposeData(channelBuffer)) {
-            DBOper.getDBOper().insertDownWarnMsgExgInform(cmdDownWarnMsgExgInform);
+            //TODO save this command to database or send to memcached
+            this.iAddData.addSingleToQueue(cmdDownWarnMsgExgInform);
 		}
 	}
 
@@ -496,7 +515,8 @@ public final class GW809CmdDisposer {
 	private void dealCmdDownCtrlMsgMonitorVehicleReq(ChannelBuffer channelBuffer, IMainSubLink link) {
 		CmdDownCtrlMsgMonitorVehicleReq cmdDownCtrlMsgMonitorVehicleReq = new CmdDownCtrlMsgMonitorVehicleReq();
 		if (cmdDownCtrlMsgMonitorVehicleReq.disposeData(channelBuffer)) {
-            DBOper.getDBOper().insertDownCtrlMsgMonitorVehicle(cmdDownCtrlMsgMonitorVehicleReq);
+            //TODO save this command to database or send to memcached
+            this.iAddData.addSingleToQueue(cmdDownCtrlMsgMonitorVehicleReq);
 		}
 	}
 
@@ -504,7 +524,8 @@ public final class GW809CmdDisposer {
 	private void dealCmdDownCtrlMsgTakePhotoReq(ChannelBuffer channelBuffer, IMainSubLink link) {
 		CmdDownCtrlMsgTakePhotoReq cmdDownCtrlMsgTakePhotoReq = new CmdDownCtrlMsgTakePhotoReq();
 		if (cmdDownCtrlMsgTakePhotoReq.disposeData(channelBuffer)) {
-            DBOper.getDBOper().insertDownCtrlMsgTakePhoto(cmdDownCtrlMsgTakePhotoReq);
+            //TODO save this command to database or send to memcached
+            this.iAddData.addSingleToQueue(cmdDownCtrlMsgTakePhotoReq);
 		}
 	}
 
@@ -512,7 +533,8 @@ public final class GW809CmdDisposer {
 	private void dealCmdDownCtrlMsgTextInfo(ChannelBuffer channelBuffer, IMainSubLink link) {
 		CmdDownCtrlMsgTextInfo cmdDownCtrlMsgTextInfo = new CmdDownCtrlMsgTextInfo();
 		if (cmdDownCtrlMsgTextInfo.disposeData(channelBuffer)) {
-            DBOper.getDBOper().insertDownCtrlMsgTextInfo(cmdDownCtrlMsgTextInfo);
+            //TODO save this command to database or send to memcached
+            this.iAddData.addSingleToQueue(cmdDownCtrlMsgTextInfo);
 		}
 	}
 
@@ -520,7 +542,8 @@ public final class GW809CmdDisposer {
 	private void dealCmdDownCtrlMsgTakeTravelReq(ChannelBuffer channelBuffer, IMainSubLink link) {
 		CmdDownCtrlMsgTakeTravelReq cmdDownCtrlMsgTakeTravelReq = new CmdDownCtrlMsgTakeTravelReq();
 		if (cmdDownCtrlMsgTakeTravelReq.disposeData(channelBuffer)) {
-            DBOper.getDBOper().insertDownCtrlMsgTakeTravel(cmdDownCtrlMsgTakeTravelReq);
+            //TODO save this command to database or send to memcached
+            this.iAddData.addSingleToQueue(cmdDownCtrlMsgTakeTravelReq);
 		}
 	}
 
@@ -528,7 +551,8 @@ public final class GW809CmdDisposer {
 	private void dealCmdDownCtrlMsgEmergencyMonitoringReq(ChannelBuffer channelBuffer, IMainSubLink link) {
 		CmdDownCtrlMsgEmergencyMonitoringReq cmdDownCtrlMsgEmergencyMonitoringReq = new CmdDownCtrlMsgEmergencyMonitoringReq();
 		if (cmdDownCtrlMsgEmergencyMonitoringReq.disposeData(channelBuffer)) {
-            DBOper.getDBOper().insertDownCtrlMsgEmergencyMonitoring(cmdDownCtrlMsgEmergencyMonitoringReq);
+            //TODO save this command to database or send to memcached
+            this.iAddData.addSingleToQueue(cmdDownCtrlMsgEmergencyMonitoringReq);
 		}
 	}
 

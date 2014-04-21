@@ -147,24 +147,25 @@ public abstract class CmdHead implements ICmd {
 	 * @param eIndex（不含）
 	 * @param key
 	 */
-	private void encryptData(ChannelBuffer buffer, int sIndex, int eIndex, int key) {
+	private void encryptData(ChannelBuffer buffer, int sIndex, int eIndex, long key) {
 		if (sIndex < 0 || eIndex > buffer.capacity()) {
 			return;
 		}
 		if (key == 0) {
 			key = 1;
 		}
-		int m1 = SysParams.getInstance().getM1();
+		long m1 = SysParams.getInstance().getM1();
 		if (m1 == 0) {
 			m1 = 1;
 		}
-		int ia1 = SysParams.getInstance().getIa1();
-		int ic1 = SysParams.getInstance().getIc1();
-		key = ia1 * (key % m1) + ic1;
+		long ia1 = SysParams.getInstance().getIa1();
+		long ic1 = SysParams.getInstance().getIc1();
 		byte b = 0;
 		for (int i = sIndex; i < eIndex; i ++) {
+			key = ia1 * (key % m1) + ic1;
+			key &= 0xFFFFFFFFL;
 			b = buffer.getByte(i);
-			b ^= (byte)((key >> 20) & 0xFF);
+			b ^= (byte)((key >>> 20) & 0xFF);
 			buffer.setByte(i, b);
 		}
 	}

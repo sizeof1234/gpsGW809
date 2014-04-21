@@ -36,6 +36,7 @@ public class CmdDownTotalRecvBackMsgReq extends CmdHead {
 
 	public CmdDownTotalRecvBackMsgReq(){
 	}
+	
 	@Override
 	protected void disposeCmdBody(ChannelBuffer channelBuffer) {
 		this.dynamicInfoTotal = channelBuffer.readInt();
@@ -47,7 +48,9 @@ public class CmdDownTotalRecvBackMsgReq extends CmdHead {
 
 	@Override
 	protected void fillCmdBody(ChannelBuffer channelBuffer) {
-
+		channelBuffer.writeInt(this.dynamicInfoTotal);
+		channelBuffer.writeLong(this.startTime);
+		channelBuffer.writeLong(this.endTime);
 	}
 
 	@Override

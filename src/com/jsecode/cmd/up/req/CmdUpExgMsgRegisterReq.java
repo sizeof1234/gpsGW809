@@ -43,6 +43,11 @@ public class CmdUpExgMsgRegisterReq extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		channelBuffer.readBytes(this.platFormId);
+		channelBuffer.readBytes(this.producerId);
+		channelBuffer.readBytes(this.terminalModelType);
+		channelBuffer.readBytes(this.terminalId);
+		channelBuffer.readBytes(this.terminalSimCode);
 	}
 
 	@Override

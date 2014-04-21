@@ -17,6 +17,15 @@ public class SysParams {
 	private final static SysParams sysParams = new SysParams();
 	private KKConfig kkConfig;
 	
+	/**
+	 * 服务启动模式:
+	 *   0:只启动标准下级服务
+	 *   1:同时启动标准下级平台服务与模拟上级平台服务 
+	 *   2:只启动模拟上级平台服务
+	 * 默认0
+	 */
+	private int serverMode;
+	
 	/* tcp相关 */
 	private String mainLinkIp;//主链路IP
 	private int mainLinkPort;//主链路端口
@@ -26,6 +35,7 @@ public class SysParams {
 	private String userPass;//主链路登录用户密码
 	private int telnetPort;//telnet监听端口
 	
+	private int superiorPort;//模拟的上级平台监听端口	
 	
 	/* 数据库相关参数 */
 	private String jdbcDriver;
@@ -47,17 +57,20 @@ public class SysParams {
 	/* 实际业务中需要配置的参数 */
 	private int minVehicleNoGBKSize;//车牌号GBK编码最短长度
 	private int maxVehicleNoGBKSize;//车牌号GBK编码最长长度
+	
+	private int gatewayNo;//对应的网关编号
 
 	public static SysParams getInstance() {
 		return sysParams;
 	}
 	
 	private SysParams() {
-		String configFilePath = "." + System.getProperty("file.separator")
-				+ "gw809.properties";
+		String configFilePath = "conf.properties";
 		kkConfig = new KKConfig(configFilePath);
 		jdbcList = new ArrayList<JDBCConfig>();
 		this.loadSysParams();
+		KKLog.info("*********************SysParams*********************" + getSysParamStrs());
+		KKLog.info("*********************SysParams*********************\n");
 	}
 
 	public void loadSysParams() {
@@ -93,6 +106,78 @@ public class SysParams {
 		
 		this.minVehicleNoGBKSize = kkConfig.getIntValue("minVehicleNoGBKSize");
 		this.maxVehicleNoGBKSize = kkConfig.getIntValue("maxVehicleNoGBKSize");
+		if (this.minVehicleNoGBKSize == 0) {
+			this.minVehicleNoGBKSize = 8;
+		}
+		if (this.maxVehicleNoGBKSize == 0) {
+			this.maxVehicleNoGBKSize = 10;
+		}
+		
+		this.gatewayNo = kkConfig.getIntValue("gatewayNo");
+		this.serverMode = kkConfig.getIntValue("serverMode");
+		this.superiorPort = kkConfig.getIntValue("superiorPort");
+	}
+	
+	/**
+	 * 获取配置参数内容
+	 * @return
+	 */
+	public String getSysParamStrs() {
+		String split = "\n                  * ";
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append(split);
+		sBuilder.append("serverMode:").append(this.serverMode);
+		sBuilder.append(split);
+		sBuilder.append("mainLinkIp:").append(this.mainLinkIp);
+		sBuilder.append(split);
+		sBuilder.append("mainLinkPort:").append(this.mainLinkPort);
+		sBuilder.append(split);
+		sBuilder.append("subLinkIp:").append(this.subLinkIp);
+		sBuilder.append(split);
+		sBuilder.append("subLinkPort:").append(this.subLinkPort);
+		sBuilder.append(split);
+		sBuilder.append("userId:").append(this.userId);
+		sBuilder.append(split);
+		sBuilder.append("userPass:").append(this.userPass);
+		sBuilder.append(split);
+		sBuilder.append("telnetPort:").append(this.telnetPort);
+		sBuilder.append(split);
+		sBuilder.append("superiorPort:").append(this.superiorPort);
+		sBuilder.append(split);
+		sBuilder.append("jdbc.count=").append(this.jdbcList.size());
+		JDBCConfig jdbcConfig = null;
+		for (int i = 0; i < this.jdbcList.size(); i ++) {
+			jdbcConfig = this.jdbcList.get(i);
+			sBuilder.append(split);
+			sBuilder.append("jdbcUrl" + (i + 1)).append(jdbcConfig.getJdbcUrl());
+			sBuilder.append(split);
+			sBuilder.append("jdbcDriver" + (i + 1)).append(jdbcConfig.getJdbcDriver());
+			sBuilder.append(split);
+			sBuilder.append("dbUserName" + (i + 1)).append(jdbcConfig.getDbUserName());
+			sBuilder.append(split);
+			sBuilder.append("dbUserPass" + (i + 1)).append(jdbcConfig.getDbUserPass());
+		}
+		
+		sBuilder.append(split);
+		sBuilder.append("gnssCenterId:").append(this.gnssCenterId);
+		sBuilder.append(split);
+		sBuilder.append("verFlag:").append(this.verFlag);
+		sBuilder.append(split);
+		sBuilder.append("isEncrypted:").append(this.isEncrypted);
+		sBuilder.append(split);
+		sBuilder.append("encryptionKey:").append(this.encryptionKey);
+		sBuilder.append(split);
+		sBuilder.append("m1:").append(this.m1);
+		sBuilder.append(split);
+		sBuilder.append("ia1:").append(this.ia1);
+		sBuilder.append(split);
+		sBuilder.append("ic1:").append(this.ic1);
+		sBuilder.append(split);
+		sBuilder.append("minVehicleNoGBKSize:").append(this.minVehicleNoGBKSize);
+		sBuilder.append(split);
+		sBuilder.append("maxVehicleNoGBKSize:").append(this.maxVehicleNoGBKSize);
+
+		return sBuilder.toString();
 	}
 	
 	public static String getDefaultStr(String expectedVal, String defaultVal) {
@@ -198,6 +283,26 @@ public class SysParams {
 		return new ArrayList<JDBCConfig>(jdbcList);
 	}
 
+	public int getGatewayNo() {
+		return gatewayNo;
+	}
+	
+	/**
+	 * 服务启动模式:
+	 *   0:只启动标准下级服务
+	 *   1:同时启动标准下级平台服务与模拟上级平台服务 
+	 *   2:只启动模拟上级平台服务
+	 * 默认0
+	 * @return
+	 */
+	public int getServerMode() {
+		return serverMode;
+	}
+
+	public int getSuperiorPort() {
+		return superiorPort;
+	}
+
 }
 
 class KKConfig {
@@ -207,7 +312,7 @@ class KKConfig {
 
     public KKConfig(String configFilePath) {
         this.properties = new Properties();
-        this.configFileName = System.getProperty("user.dir") + System.getProperty("file.separator") + configFilePath;
+        this.configFileName = KKConfig.class.getClassLoader().getResource(configFilePath).getPath();
         try {
             this.inputStream = new FileInputStream(configFileName);
             this.properties.load(this.inputStream);

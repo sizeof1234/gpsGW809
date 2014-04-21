@@ -1,6 +1,6 @@
 package com.jsecode.biz.ctrlmsg;
 
-import com.jsecode.biz.ISendData;
+import com.jsecode.biz.IAddDataToQueue;
 import com.jsecode.bean.ctrlmsg.CtrlMsgEmergencyMonitoBean;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -19,9 +19,9 @@ import java.util.concurrent.CountDownLatch;
  * 修改备注：
  */
 public class ThreadLoadCtrlMsgEmergencyMonitoring implements Runnable{
-    private ISendData<CtrlMsgEmergencyMonitoBean> sendData;
+    private IAddDataToQueue<CtrlMsgEmergencyMonitoBean> sendData;
     private CountDownLatch dataLoadSignal;
-    public ThreadLoadCtrlMsgEmergencyMonitoring(ISendData<CtrlMsgEmergencyMonitoBean> sendData,CountDownLatch dataLoadSignal){
+    public ThreadLoadCtrlMsgEmergencyMonitoring(IAddDataToQueue<CtrlMsgEmergencyMonitoBean> sendData,CountDownLatch dataLoadSignal){
         this.sendData=sendData;
         this.dataLoadSignal=dataLoadSignal;
     }

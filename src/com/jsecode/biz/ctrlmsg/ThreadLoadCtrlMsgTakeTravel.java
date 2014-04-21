@@ -1,6 +1,6 @@
 package com.jsecode.biz.ctrlmsg;
 
-import com.jsecode.biz.ISendData;
+import com.jsecode.biz.IAddDataToQueue;
 import com.jsecode.bean.ctrlmsg.CtrlMsgTakeTravelBean;
 
 import java.util.List;
@@ -22,9 +22,9 @@ import java.util.concurrent.CountDownLatch;
  * 修改备注：
  */
 public class ThreadLoadCtrlMsgTakeTravel  implements Runnable{
-    private ISendData<CtrlMsgTakeTravelBean> sendData;
+    private IAddDataToQueue<CtrlMsgTakeTravelBean> sendData;
     private CountDownLatch dataLoadSignal;
-    public ThreadLoadCtrlMsgTakeTravel(ISendData<CtrlMsgTakeTravelBean> sendData,CountDownLatch dataLoadSignal){
+    public ThreadLoadCtrlMsgTakeTravel(IAddDataToQueue<CtrlMsgTakeTravelBean> sendData,CountDownLatch dataLoadSignal){
         this.sendData=sendData;
         this.dataLoadSignal=dataLoadSignal;
     }

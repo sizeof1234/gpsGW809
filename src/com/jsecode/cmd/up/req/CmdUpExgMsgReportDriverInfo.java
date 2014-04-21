@@ -39,6 +39,10 @@ public class CmdUpExgMsgReportDriverInfo extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		channelBuffer.readBytes(this.driverName);
+		channelBuffer.readBytes(this.driverId);
+		channelBuffer.readBytes(this.licence);
+		channelBuffer.readBytes(this.orgName);
 	}
 
 	@Override

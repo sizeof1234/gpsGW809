@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="GpsGW809" default="jar" basedir=".">
+
+	<import file="properties.xml" />
+
+	<!--主要的系统环境属性 -->
+	<property environment="env" />
+	<!--取window,unix...的环境变量 -->
+	<property name="java.home" value="${env.JAVA_HOME}" />
+	<property name="ant.home" value="${env.ANT_HOME}" />
+
+	<property name="project.name" value="GpsGW809" />
+	<property name="project.version" value="${jar.version}" />
+
+	<!--app中src的属性 -->
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="src.main" value="${src.dir}" />
+	<property name="src.script" value="${basedir}/scripts" />
+	<property name="src.resources" value="${basedir}/conf" />
+
+
+	<!--app用到的lib -->
+	<property name="lib.dir" value="${basedir}/lib" />
+
+
+	<!--app的build目录中 -->
+	<property name="build.src.dir" value="${basedir}/target/classes" />
+	<property name="build.dir" value="${basedir}/target" />
+
+    <!-- app的发布目录 -->
+	<property name="dist.dir" value="${basedir}/dist" />
+
+	<target name="build" description="Build all source code">
+		<delete dir="${build.src.dir}" />
+		<mkdir dir="${build.src.dir}" />
+
+		<copy todir="${build.src.dir}">
+			<fileset dir="${src.main}">
+				<exclude name="**/*.java" />
+				<exclude name="**/*.html" />
+			</fileset>
+			<fileset dir="${src.resources}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+
+		<javac debug="${compile.debug}"
+			debuglevel="${compile.debuglevel}" destdir="${build.src.dir}"
+			encoding="UTF-8" includeantruntime="false" >
+			<src path="${src.main}" />
+			<src path="${src.resources}" />
+			<classpath>
+		        <fileset dir="${lib.dir}">
+		            <include name="**/*.jar" />
+		        </fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="build">
+		<delete dir="${dist.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${dist.dir}/${jar.name}" compress="true">
+			<fileset dir="${build.dir}/classes" />
+			<manifest>
+				<attribute name="Main-class" value="com.jsecode.GW809Server"/>
+		    </manifest>
+		</jar>
+	</target>
+
+	<target name="release" depends="jar">
+		<mkdir dir="${dist.dir}/log" />
+		<mkdir dir="${dist.dir}/pid" />
+
+		<zip destfile="${dist.dir}/${project.name}.zip">
+			<zipfileset dir="${src.resources}" includes="*.*" prefix="conf" />
+			<zipfileset dir="${dist.dir}" includes="*.jar" prefix="lib" />
+			<zipfileset dir="${lib.dir}" includes="**/*.jar" prefix="lib" />
+			<zipfileset dir="${dist.dir}/log" prefix="log"/>
+			<zipfileset dir="${dist.dir}/pid" prefix="pid"/>
+		</zip>
+
+		<delete dir="${dist.dir}/log" />
+		<delete dir="${dist.dir}/pid" />
+	</target>
+</project>

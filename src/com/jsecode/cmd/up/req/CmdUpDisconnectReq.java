@@ -31,6 +31,8 @@ public class CmdUpDisconnectReq extends CmdHead {
 
 	@Override
 	protected void disposeCmdBody(ChannelBuffer channelBuffer) {
+		this.userId = channelBuffer.readInt();
+		channelBuffer.readBytes(this.userPass);
 	}
 	
 	@Override

@@ -50,6 +50,7 @@ public class CmdDownConnectReq extends CmdHead {
 	
 	@Override
 	protected void fillCmdBody(ChannelBuffer channelBuffer) {
+		channelBuffer.writeInt(this.verifyCode);
 	}
 
 	@Override

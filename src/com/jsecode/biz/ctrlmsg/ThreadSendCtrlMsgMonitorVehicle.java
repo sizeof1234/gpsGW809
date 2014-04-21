@@ -28,7 +28,7 @@ public class ThreadSendCtrlMsgMonitorVehicle  extends AbstractThreadSendData<Ctr
     public void run() {
         CtrlMsgMonitorVehicleBean ctrlMsgMonitorVehicleBean = null;
         while(!isInterrupted()) {
-            while((ctrlMsgMonitorVehicleBean = queue.poll()) != null) {
+            while((ctrlMsgMonitorVehicleBean = getQueuePollData()) != null) {
                 sendInfo(ctrlMsgMonitorVehicleBean);
             }
             waitNewData();

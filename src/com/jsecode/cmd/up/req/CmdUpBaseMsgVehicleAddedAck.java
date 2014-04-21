@@ -29,6 +29,8 @@ public class CmdUpBaseMsgVehicleAddedAck extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.vehicleInfo = new byte[this.getSubDataSize()];
+		channelBuffer.readBytes(this.vehicleInfo);
 	}
 
 	@Override

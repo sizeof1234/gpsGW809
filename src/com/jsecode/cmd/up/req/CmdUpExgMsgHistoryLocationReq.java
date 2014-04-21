@@ -24,28 +24,36 @@ import com.jsecode.cmd.bean.GpsCmdBean;
  */
 public class CmdUpExgMsgHistoryLocationReq extends CmdHeadSubBizWithCar {
 	
+	private byte gpsCount;
 	private List<GpsCmdBean> gpsList;
 
 	public CmdUpExgMsgHistoryLocationReq() {
-		gpsList = new ArrayList<GpsCmdBean>();
+		gpsList = GPS_LIST_EMPTY;
 	}
 
 	@Override
 	protected int getCmdSubBizDataSize() {
 		if (gpsList.size() > 0) {
-			return gpsList.size() * gpsList.get(0).getBeanSize();
+			return 1 + gpsList.size() * gpsList.get(0).getBeanSize();
 		} else {
-			return 0;
+			return 1;
 		}
 	}
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
-
+		this.gpsCount = channelBuffer.readByte();
+		gpsList = new ArrayList<GpsCmdBean>();
+		for (int i = 0; i < this.gpsCount; i ++) {
+			GpsCmdBean gpsCmdBean = new GpsCmdBean();
+			gpsCmdBean.disposeData(channelBuffer);
+			gpsList.add(gpsCmdBean);
+		}
 	}
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
+		channelBuffer.writeByte(this.gpsCount);
 		for (GpsCmdBean gpsBean : gpsList) {
 			gpsBean.fillChannelBuffer(channelBuffer);
 		}
@@ -59,7 +67,12 @@ public class CmdUpExgMsgHistoryLocationReq extends CmdHeadSubBizWithCar {
 	public void addGpsData(GpsCmdBean gpsBean) {
 		if (gpsBean != null) {
 			this.gpsList.add(gpsBean);
+			this.gpsCount = (byte)this.gpsList.size();
 		}
+	}
+
+	public byte getGpsCount() {
+		return gpsCount;
 	}
 
 }

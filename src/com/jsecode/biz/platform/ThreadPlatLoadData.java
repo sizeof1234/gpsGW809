@@ -1,9 +1,10 @@
 package com.jsecode.biz.platform;
 
 import com.jsecode.bean.platform.PlatformMsgBean;
-import com.jsecode.db.DBOper;
+import com.jsecode.biz.IAddDataToQueue;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * 项目名称：gpsGW809
@@ -19,42 +20,30 @@ import java.util.List;
  * 修改备注：
  */
 public class ThreadPlatLoadData extends Thread {
-    //将数据库的最大的回复时间取出作比较
-    private Long compareMaxTime;
-    private PlatformMsgBean comparePlatformMsg;
-    private ISendPlatData sendPlatData;
+    private CountDownLatch dataLoadSignal;
+    private IAddDataToQueue<PlatformMsgBean> sendData;
 
-    public ThreadPlatLoadData(ISendPlatData sendPlatData) {
-        this.sendPlatData = sendPlatData;
+    public ThreadPlatLoadData(IAddDataToQueue<PlatformMsgBean> sendData, CountDownLatch dataLoadSignal) {
+        this.sendData = sendData;
+        this.dataLoadSignal = dataLoadSignal;
 
     }
 
-    /**
-     * 根据compareMaxTime 判定每次读取的数据是否重复
-     */
-    @Override
     public void run() {
-        //第一次时，获取数据库时间
-        if (compareMaxTime == null) {
-            comparePlatformMsg = new PlatformMsgBean();
-            comparePlatformMsg.setReqType("02");
-            comparePlatformMsg.setReplyTime((String) DBOper.getDBOper().findSysdate());
+        try {//wait the terminal info loaded
+            this.dataLoadSignal.await();
+        } catch (InterruptedException e) {
         }
-        List<PlatformMsgBean> list = DBOper.getDBOper().findPlatformMsgDataMultiple(comparePlatformMsg, PlatformMsgBean.class);
-        if (null != list && list.size() > 0) {
-            PlatformMsgBean platformMsgBean = list.get(0);
-            Long replayTime = Long.valueOf(platformMsgBean.getReplyTime().replaceAll("[-\\s:]", ""));
-            if (compareMaxTime == null) {
-                addGpsDataToQueue(list);
-                compareMaxTime = replayTime;
-            } else if (replayTime > compareMaxTime) {
-                addGpsDataToQueue(list);
-            }
-            comparePlatformMsg.setReplyTime(platformMsgBean.getReplyTime());
-        }
+
+        List<PlatformMsgBean> list = null;
+        //TODO load PlatformMsgBean info from database or memcached
+
+        addInfoToQueue(list);
     }
 
-    private void addGpsDataToQueue(List<PlatformMsgBean> list) {
-        this.sendPlatData.addPlatformDataList(list);
+    private void addInfoToQueue(List<PlatformMsgBean> list) {
+        if (list != null && list.size() > 0) {
+            this.sendData.addListToQueue(list);
+        }
     }
 }

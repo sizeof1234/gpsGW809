@@ -11,6 +11,8 @@ import org.jboss.netty.channel.Channel;
 
 import com.jsecode.biz.GW809CmdDisposer;
 import com.jsecode.biz.ThreadLoadBaseInfo;
+import com.jsecode.biz.ThreadSaveCmd2DB;
+import com.jsecode.cmd.CmdHead;
 import com.jsecode.cmd.up.req.CmdUpExgMsgApplyHisGnssDataReq;
 import com.jsecode.link.IMainSubLink;
 import com.jsecode.tcp.client.TcpClient;
@@ -23,7 +25,10 @@ import com.jsecode.utils.KKSimpleTimer;
 import com.jsecode.utils.KKTool;
 import com.jsecode.utils.SysParams;
 
-public class GW809Server implements IGW809, ITelnetServer {
+/**
+ * 809标准下级服务
+ */
+public class GW809Server implements IGW809, ITelnetServer, ISuperiorToInferior {
 
 	private SysParams sysParams;
 	private final TcpClient mainLink;// 主链路
@@ -37,6 +42,8 @@ public class GW809Server implements IGW809, ITelnetServer {
 	private KKSimpleTimer loadTerminalInfoTimer;
 	private KKSimpleTimer loadGpsDataTimer;
 	private final CountDownLatch dataLoadedSingal;
+	
+	private final ThreadSaveCmd2DB threadSaveCmd2DB;
 
     /**************************信息交互业务下发******************************/
     private KKSimpleTimer loadPlatDataTimer;
@@ -54,20 +61,22 @@ public class GW809Server implements IGW809, ITelnetServer {
 		mainLink = new TcpClient(sysParams.getMainLinkIp(),	sysParams.getMainLinkPort(), this);
 		subLink = new TcpServer(sysParams.getSubLinkPort(), this);
 		telnetServer = new TelnetServer(sysParams.getTelnetPort(), this);
-		gw809CmdDisposer = new GW809CmdDisposer(this);
 		telnetCmdDisposer = new TelnetCmdDisposer(this);
 		threadSendGpsData = new ThreadSendGpsData(this);
         threadSendPlatData = new ThreadPlatSendData(this);
+        threadSaveCmd2DB = new ThreadSaveCmd2DB();
 		dataLoadedSingal = new CountDownLatch(1);
 		this.startMainSubLinkAndTelnetServer();
 		this.startDBLoadTimer();
 		this.startThreadsAndTimer();
+
+		gw809CmdDisposer = new GW809CmdDisposer(this, this.threadSaveCmd2DB);
 	}
 
 	private void startMainSubLinkAndTelnetServer() {
-		mainLink.start();
 		subLink.start();
 		telnetServer.start();
+		mainLink.start();
 	}
 
 	private void startDBLoadTimer() {
@@ -79,8 +88,9 @@ public class GW809Server implements IGW809, ITelnetServer {
 		loadTerminalInfoTimer.start();
 		loadGpsDataTimer.start();
 		this.threadSendGpsData.start();
+		this.threadSaveCmd2DB.start();
         /**************************信息交互业务下发******************************/
-        loadPlatDataTimer = new KKSimpleTimer(new ThreadPlatLoadData(threadSendPlatData), 5, Const.LOAD_GPS_DATA_INTERVAL_SECONDS);
+        loadPlatDataTimer = new KKSimpleTimer(new ThreadPlatLoadData(threadSendPlatData, dataLoadedSingal), 5, Const.LOAD_GPS_DATA_INTERVAL_SECONDS);
         loadPlatDataTimer.start();
         this.threadSendPlatData.start();
         /**************************信息交互业务下发******************************/
@@ -160,6 +170,14 @@ public class GW809Server implements IGW809, ITelnetServer {
 		cmdUpExgMsgApplyHisGnssDataReq.setStartTime(link.getLastRecvDataTime());
 		cmdUpExgMsgApplyHisGnssDataReq.setEndTime(KKTool.getCurrUTC());
 		link.sendData(cmdUpExgMsgApplyHisGnssDataReq.getSendBuffer());
+	}
+
+	
+	@Override
+	public void forwardCmd(CmdHead cmd) {
+		if (cmd != null) {
+			getMainLink(true).sendData(cmd.getSendBuffer());
+		}
 	}
 
 }

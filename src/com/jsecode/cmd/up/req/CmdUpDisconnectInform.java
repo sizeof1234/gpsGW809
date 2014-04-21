@@ -32,6 +32,7 @@ public class CmdUpDisconnectInform extends CmdHead {
 
 	@Override
 	protected void disposeCmdBody(ChannelBuffer channelBuffer) {
+		this.errorCode = channelBuffer.readByte();
 	}
 
 	@Override

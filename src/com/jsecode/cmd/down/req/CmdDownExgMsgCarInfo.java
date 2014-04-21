@@ -1,5 +1,7 @@
 package com.jsecode.cmd.down.req;
 
+import java.nio.charset.Charset;
+
 import com.jsecode.cmd.CmdHeadSubBizWithCar;
 import com.jsecode.utils.KKLog;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -40,7 +42,7 @@ public class CmdDownExgMsgCarInfo extends CmdHeadSubBizWithCar{
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-		
+		channelBuffer.writeBytes(this.carInfo);
 	}
 
 	@Override
@@ -50,7 +52,8 @@ public class CmdDownExgMsgCarInfo extends CmdHeadSubBizWithCar{
 
 	@Override
 	public String getDBSaveContent() {
-		return EMPTY_STR;
+		//return EMPTY_STR;
+		return new String(carInfo, Charset.forName("GBK"));
 	}
 
     public byte[] getCarInfo() {

@@ -113,6 +113,7 @@ public class TcpClient extends AbstractMainSubLink implements ITcpClient{
 		}
 		
 		if (reconnectTimer == null) {
+			KKLog.info("start new reconnect timer");
 			reconnectTimer = new KKSimpleTimer(new Runnable() {
 				@Override
 				public void run() {
@@ -141,6 +142,7 @@ public class TcpClient extends AbstractMainSubLink implements ITcpClient{
 		cmdUpConnectReq.setDownLinkIp(KKTool.getFixedLenBytes(sysParams.getSubLinkIp(), 32));
 		cmdUpConnectReq.setDownLinkPort(sysParams.getSubLinkPort());
 		this.sendData(cmdUpConnectReq.getSendBuffer());
+		KKLog.info("login to server");
 	}
 
 	/**

@@ -28,7 +28,7 @@ public class ThreadSendCtrlMsgEmergencyMonitoring extends AbstractThreadSendData
     public void run() {
         CtrlMsgEmergencyMonitoBean ctrlMsgEmergencyMonitoBean = null;
         while(!isInterrupted()) {
-            while((ctrlMsgEmergencyMonitoBean = queue.poll()) != null) {
+            while((ctrlMsgEmergencyMonitoBean = getQueuePollData()) != null) {
                 sendInfo(ctrlMsgEmergencyMonitoBean);
             }
             waitNewData();

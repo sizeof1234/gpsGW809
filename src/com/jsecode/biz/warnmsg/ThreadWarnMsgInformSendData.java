@@ -30,7 +30,7 @@ public class ThreadWarnMsgInformSendData extends AbstractThreadSendData<WarnMsgA
     public void run() {
         WarnMsgAdptInfoBean warnMsgAdptInfoBean = null;
         while (!isInterrupted()) {
-            while ((warnMsgAdptInfoBean = queue.poll()) != null) {
+            while ((warnMsgAdptInfoBean = getQueuePollData()) != null) {
                 sendInfo(warnMsgAdptInfoBean);
             }
             waitNewData();

@@ -40,7 +40,7 @@ public class CmdDownExgMsgCarLocation extends CmdHeadSubBizWithCar{
 	private GpsCmdBean gnssData;    // 数据部分
 	
 	public   CmdDownExgMsgCarLocation() {
-		gnssData = new GpsCmdBean();
+		gnssData = EMPTY_GPS_BEAN;
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class CmdDownExgMsgCarLocation extends CmdHeadSubBizWithCar{
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-		
+		this.gnssData.fillChannelBuffer(channelBuffer);
 	}
 	@Override
 	protected int getCmdSubBizDataSize() {
@@ -68,6 +68,8 @@ public class CmdDownExgMsgCarLocation extends CmdHeadSubBizWithCar{
     }
 
     public void setGnssData(GpsCmdBean gnssData) {
-        this.gnssData = gnssData;
+    	if (gnssData != null) {
+    		this.gnssData = gnssData;
+    	}
     }
 }

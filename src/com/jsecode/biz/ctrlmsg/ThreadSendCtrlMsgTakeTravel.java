@@ -30,7 +30,7 @@ public class ThreadSendCtrlMsgTakeTravel  extends AbstractThreadSendData<CtrlMsg
     public void run() {
         CtrlMsgTakeTravelBean ctrlMsgTakeTravelBean = null;
         while(!isInterrupted()) {
-            while((ctrlMsgTakeTravelBean = queue.poll()) != null) {
+            while((ctrlMsgTakeTravelBean = getQueuePollData()) != null) {
                 sendInfo(ctrlMsgTakeTravelBean);
             }
             waitNewData();

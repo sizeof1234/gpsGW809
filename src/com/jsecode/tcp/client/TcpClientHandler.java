@@ -34,7 +34,7 @@ public class TcpClientHandler extends SimpleChannelHandler {
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)
 			throws Exception {
-//		KKLog.info("channelConnected:" + ctx.getChannel().getId());
+		KKLog.info("channelConnected:" + ctx.getChannel().getId());
 		this.tcpClient.setConnectedChannel(ctx.getChannel());
 	}
 

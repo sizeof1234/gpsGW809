@@ -1,6 +1,6 @@
 package com.jsecode.biz.warnmsg;
 
-import com.jsecode.biz.ISendData;
+import com.jsecode.biz.IAddDataToQueue;
 import com.jsecode.bean.warnmsg.WarnMsgAdptInfoBean;
 
 import java.util.List;
@@ -20,10 +20,10 @@ import java.util.concurrent.CountDownLatch;
  * 修改备注：
  */
 public class ThreadWarnMsgAdptInfoLoadData implements Runnable {
-    private ISendData<WarnMsgAdptInfoBean> sendData;
+    private IAddDataToQueue<WarnMsgAdptInfoBean> sendData;
     private CountDownLatch dataLoadSignal;
 
-    public ThreadWarnMsgAdptInfoLoadData(ISendData<WarnMsgAdptInfoBean> sendData, CountDownLatch dataLoadSignal) {
+    public ThreadWarnMsgAdptInfoLoadData(IAddDataToQueue<WarnMsgAdptInfoBean> sendData, CountDownLatch dataLoadSignal) {
         this.sendData = sendData;
         this.dataLoadSignal = dataLoadSignal;
     }

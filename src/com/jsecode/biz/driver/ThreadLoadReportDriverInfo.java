@@ -8,17 +8,17 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import com.jsecode.bean.DriverBean;
-import com.jsecode.biz.ISendData;
+import com.jsecode.biz.IAddDataToQueue;
 
 /**
  * 定时获取实时上报驾驶员信息
  */
 public class ThreadLoadReportDriverInfo implements Runnable {
 	
-	private ISendData<DriverBean> sendData;
+	private IAddDataToQueue<DriverBean> sendData;
 	private CountDownLatch dataLoadSignal;
 	
-	public ThreadLoadReportDriverInfo(ISendData<DriverBean> sendData, CountDownLatch dataLoadSignal) {
+	public ThreadLoadReportDriverInfo(IAddDataToQueue<DriverBean> sendData, CountDownLatch dataLoadSignal) {
 		this.sendData = sendData;
 		this.dataLoadSignal = dataLoadSignal;
 	}

@@ -30,7 +30,7 @@ public class ThreadSendCtrlMsgTextInfo   extends AbstractThreadSendData<CtrlMsgT
     public void run() {
         CtrlMsgTextInfoBean ctrlMsgTextInfoBean = null;
         while(!isInterrupted()) {
-            while((ctrlMsgTextInfoBean = queue.poll()) != null) {
+            while((ctrlMsgTextInfoBean = getQueuePollData()) != null) {
                 sendInfo(ctrlMsgTextInfoBean);
             }
             waitNewData();

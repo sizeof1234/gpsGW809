@@ -29,6 +29,8 @@ public class CmdUpCtrlMsgTextInfoAck extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.msgId = channelBuffer.readInt();
+		this.result = channelBuffer.readByte();
 	}
 
 	@Override

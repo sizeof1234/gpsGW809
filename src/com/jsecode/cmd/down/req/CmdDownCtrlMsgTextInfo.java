@@ -30,6 +30,7 @@ public class CmdDownCtrlMsgTextInfo extends CmdHeadSubBizWithCar {
 	private byte msgPriority;    //报文优先级{00x0 紧急，00x1 一般}
 	private int msgLength;       //报文信息长度
 	private byte [] msgContent;  //报文信息内容
+	
 	public CmdDownCtrlMsgTextInfo() {
         msgContent = ZERO_BYTES;
 	}
@@ -46,12 +47,15 @@ public class CmdDownCtrlMsgTextInfo extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-
+		channelBuffer.writeInt(this.msgSequnce);
+		channelBuffer.writeByte(this.msgPriority);
+		channelBuffer.writeInt(this.msgLength);
+		channelBuffer.writeBytes(this.msgContent);
 	}
 
 	@Override
 	protected int getCmdSubBizDataSize() {
-		return 4+1+4+this.msgLength;
+		return 4 + 1 + 4 + this.msgContent.length;
 	}
 
 	@Override
@@ -79,18 +83,14 @@ public class CmdDownCtrlMsgTextInfo extends CmdHeadSubBizWithCar {
         return msgLength;
     }
 
-    public void setMsgLength(int msgLength) {
-        this.msgLength = msgLength;
-    }
-
     public byte[] getMsgContent() {
         return msgContent;
     }
 
     public void setMsgContent(byte[] msgContent) {
-        if (isByteArraySameSize(this.msgContent, msgContent)) {
-            this.msgContent = msgContent;
-        }
-
+    	if (msgContent != null) {
+    		this.msgContent = msgContent;
+    		this.msgLength = this.msgContent.length;
+    	}
     }
 }

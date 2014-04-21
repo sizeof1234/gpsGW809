@@ -31,12 +31,13 @@ public class CmdUpCtrlMsgTakeTravelAck extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.travelDataSize = channelBuffer.readInt();
+		this.travelData = new byte[this.travelDataSize];
+		channelBuffer.readBytes(this.travelData);
 	}
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-		this.travelDataSize = this.travelData.length;
-		
 		channelBuffer.writeInt(this.travelDataSize);
 		channelBuffer.writeBytes(this.travelData);
 	}
@@ -57,6 +58,7 @@ public class CmdUpCtrlMsgTakeTravelAck extends CmdHeadSubBizWithCar {
 	public void setTravelData(byte[] travelData) {
 		if (travelData != null) {
 			this.travelData = travelData;
+			this.travelDataSize = this.travelData.length;
 		}
 	}
 

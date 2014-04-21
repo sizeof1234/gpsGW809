@@ -30,7 +30,7 @@ public class CmdUpExgMsgRealLocationReq extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
-
+		gpsBean.disposeData(channelBuffer);
 	}
 
 	@Override

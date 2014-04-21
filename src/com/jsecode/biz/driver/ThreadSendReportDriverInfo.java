@@ -23,7 +23,7 @@ public class ThreadSendReportDriverInfo extends AbstractThreadSendData<DriverBea
 	public void run() {
 		DriverBean driver = null;
 		while(!isInterrupted()) {
-			while((driver = queue.poll()) != null) {
+			while((driver = getQueuePollData()) != null) {
 				sendReportDriverInfo(driver);
 			}
 			waitNewData();

@@ -1437,6 +1437,49 @@ public class KKTool {
     	}
     	return sBuilder.toString();
     }
+    
+    /**
+     * 根据提供的字符串及填充字符串生成固定长度的字符串
+     * @param srcStr	原字符串
+     * @param fixedLen  固定长度
+     * @param filledChar填充字符
+     * @param isFillLeft左填充或右填充  true:左  false:右 
+     * @param isTruncatedFromLeft	源字符串超过固定长度从左截取还是从右截取  true:左  false:右
+     * @return
+     */
+    public static String getFixedLenString(String srcStr, int fixedLen, char filledChar, boolean isFillLeft, boolean isTruncatedFromLeft) {
+    	if (fixedLen <= 0) {
+    		return "";
+    	}
+    	
+    	StringBuilder sBuilder = null;
+    	if (srcStr != null) {
+    		int strLen = srcStr.length();
+    		if (strLen == fixedLen) {
+    			return srcStr;
+    		} else if (strLen > fixedLen) {
+    			if (isTruncatedFromLeft) {
+    				return srcStr.substring(0, fixedLen);
+    			} else {
+    				return srcStr.substring(srcStr.length() - fixedLen);
+    			}
+    		} else {
+    			sBuilder = new StringBuilder(srcStr);
+    		}
+    	} else {
+    		sBuilder = new StringBuilder();
+    	}
+    	if (isFillLeft) {
+    		while (sBuilder.length() < fixedLen) {
+    			sBuilder.insert(0, filledChar);
+    		}
+    	} else {
+    		while (sBuilder.length() < fixedLen) {
+    			sBuilder.append(filledChar);
+    		}
+    	}
+    	return sBuilder.toString();
+    }
 
     /**
      * 根据提供的字符串及填充字符串生成固定长度的字符串<br>
@@ -1459,6 +1502,19 @@ public class KKTool {
      */
     public static byte[] getFixedLenBytes(String srcStr, int fixedLen, char filledChar, boolean isFillLeft) {
     	return getFixedLenString(srcStr, fixedLen, filledChar, isFillLeft).getBytes();
+    }
+
+    /**
+     * 根据提供的字符串及填充字符串生成固定长度的字符串,并转成相应字节数组
+     * @param srcStr	原字符串
+     * @param fixedLen  固定长度
+     * @param filledChar填充字符
+     * @param isFillLeft左填充或右填充  true:左  false:右 
+     * @param isTruncatedFromLeft	源字符串超过固定长度从左截取还是从右截取  true:左  false:右
+     * @return
+     */
+    public static byte[] getFixedLenBytes(String srcStr, int fixedLen, char filledChar, boolean isFillLeft, boolean isTruncatedFromLeft) {
+    	return getFixedLenString(srcStr, fixedLen, filledChar, isFillLeft, isTruncatedFromLeft).getBytes();
     }
 
     /**
@@ -1818,6 +1874,37 @@ public class KKTool {
     	return new Date().getTime()/1000;
     }
     
+    /**
+     * 字符串转反向数组<br>
+     * 长度为奇数时，前补0
+     * 示例:<br>
+     * "123456", 返回 byte[]{56, 34, 12}<br>
+     * "12345",	 返回 byte[]{45, 23, 01}<br>
+     * 
+     * 参数不合法返回长度为0的字节数据
+     * @param src	传入参数必须为数字
+     * @return	
+     */
+    public static byte[] strToRevertAry(String src) {
+    	if (src == null || src.length() == 0) {
+    		return new byte[0];
+    	}
+    	
+    	if (src.length() % 2 == 1) {
+    		src = "0" + src;
+    	}
+    	byte[] buf = new byte[src.length()/2];
+    	
+
+		try {
+			for(int i = 0; i < buf.length; i ++) {
+				buf[buf.length - 1 - i] = (byte)(Integer.parseInt(src.substring(2 * i, 2 * i + 2), 10)); 
+			}
+		} catch (Exception e) {
+			return new byte[0];
+		}
+    	return buf;
+    }
 
     public static void main(String[] args) {
     }

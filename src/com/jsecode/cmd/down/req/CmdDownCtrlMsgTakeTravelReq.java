@@ -40,7 +40,7 @@ public class CmdDownCtrlMsgTakeTravelReq extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-
+		channelBuffer.writeByte(this.commandType);
 	}
 
 	@Override

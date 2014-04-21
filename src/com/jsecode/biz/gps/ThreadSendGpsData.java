@@ -39,6 +39,8 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 	
 	final static int QUEUE_LIMIT_SIZE = 100000;
 	
+	final static long MILLISECONDS_ONE_DAY = 1 * 24 * 60 * 60 * 1000L;
+	
 	public ThreadSendGpsData(IGW809 gw809) {
 		super(gw809, ThreadSendGpsData.class.getName());
 		this.queueForLinkDisconnected = new ConcurrentLinkedQueue<GpsBean>();
@@ -55,8 +57,10 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 			sendHisGpsData();
 			
 			boolean isLinkConnected = true;
-			while((gpsBean = queue.poll()) != null) {
-				if (!isVehicleNoValid(gpsBean) || isDataRepeated(gpsBean) || !isLonLatValid(gpsBean.getLon(), gpsBean.getLat())) {
+			while((gpsBean = getQueuePollData()) != null) {
+				if (!isVehicleNoValid(gpsBean) || isDataRepeated(gpsBean) 
+					|| !isLonLatValid(gpsBean.getLon(), gpsBean.getLat())
+					|| !isGpsTimeValid(gpsBean)) {
 					continue;
 				}
 				
@@ -140,8 +144,15 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 		return false;
 	}
 	
+	/**
+	 * 全球经纬度的取值范围为：纬度-90~90，经度-180~180
+	 * 中国的经纬度范围大约为：纬度3.86~53.55，经度73.66~135.05
+	 * @param lon
+	 * @param lat
+	 * @return
+	 */
 	private boolean isLonLatValid(double lon, double lat) {
-		return lon > 70 && lon < 135 && lat > 0 && lat < 120;
+		return lon > 45 && lon < 145 && lat > 0 && lat < 90;
 	}
 	
 	private boolean isVehicleNoValid(GpsBean gpsBean) {
@@ -150,6 +161,28 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 			return vehicleNoGBKSize >= sysParams.getMinVehicleNoGBKSize() && vehicleNoGBKSize <= sysParams.getMaxVehicleNoGBKSize();
 		}
 		return false;
+	}
+	
+	/**
+	 * GPS时间是否太过超前<br>
+	 * 默认不超过当前服务器时间1天的都算合法数据 
+	 * @param gpsBean
+	 * @return
+	 */
+	private boolean isGpsTimeValid(GpsBean gpsBean) {
+		boolean isValid = false;
+		if (gpsBean != null) {
+			long gpsTime = gpsBean.getGpsTime().getTime();
+			isValid = gpsTime - System.currentTimeMillis() < MILLISECONDS_ONE_DAY;
+			if (!isValid) {
+				StringBuilder sBuilder = new StringBuilder("gps time is not valid:");
+				sBuilder.append(gpsBean.getVehicleNo());
+				sBuilder.append(",");
+				sBuilder.append(KKTool.getFormatDateTime(gpsBean.getGpsTime()));
+				KKLog.warn(sBuilder.toString());
+			}
+		}
+		return isValid;
 	}
 	
 	/**
@@ -196,11 +229,12 @@ public class ThreadSendGpsData extends AbstractThreadSendData<GpsBean> implement
 			byte[] vehicleNo = KKTool.toFixedLenGBKBytes(terminal.getHostNo(), 21);
 			byte[] producerId = KKTool.getFixedLenBytes(terminal.getProducerId(), 11);
 			byte[] terminalModelType = KKTool.getFixedLenBytes(terminal.getModelType(), 20);
-			byte[] terminalId = KKTool.getFixedLenBytes(terminal.getId(), 7, '0', true);
+			byte[] terminalId = KKTool.getFixedLenBytes(terminal.getId(), 7, '0', true, false);
 			byte[] simNo = KKTool.getFixedLenBytes(terminal.getSimNo(), 12, '0', true);
+			byte[] platformId = KKTool.toFixedLenGBKBytes(String.valueOf(sysParams.getGnssCenterId()), 11);
 			cmdUpExgMsgRegisterReq.setVehicleNo(vehicleNo);
 			cmdUpExgMsgRegisterReq.setVehicleColor(terminal.getHostPlateColor());
-			cmdUpExgMsgRegisterReq.setPlatFormId(null);
+			cmdUpExgMsgRegisterReq.setPlatFormId(platformId);
 			cmdUpExgMsgRegisterReq.setProducerId(producerId);
 			cmdUpExgMsgRegisterReq.setTerminalModelType(terminalModelType);
 			cmdUpExgMsgRegisterReq.setTerminalId(terminalId);

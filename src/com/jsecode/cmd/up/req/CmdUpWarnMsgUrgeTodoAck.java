@@ -30,6 +30,8 @@ public class CmdUpWarnMsgUrgeTodoAck extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.supervisonId = channelBuffer.readInt();
+		this.result = channelBuffer.readByte();
 	}
 
 	@Override

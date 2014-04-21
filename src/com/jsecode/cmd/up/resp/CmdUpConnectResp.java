@@ -33,6 +33,8 @@ public class CmdUpConnectResp extends CmdHead {
 	
 	@Override
 	protected void fillCmdBody(ChannelBuffer channelBuffer) {
+		channelBuffer.writeByte(this.ret);
+		channelBuffer.writeInt(this.verifyCode);
 	}
 
 	@Override

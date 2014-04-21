@@ -32,7 +32,7 @@ public class ThreadSendCtrlMsgTakePhoto   extends AbstractThreadSendData<CtrlMsg
     public void run() {
         CtrlMsgTakePhotoBean ctrlMsgTakePhotoBean = null;
         while(!isInterrupted()) {
-            while((ctrlMsgTakePhotoBean = queue.poll()) != null) {
+            while((ctrlMsgTakePhotoBean = getQueuePollData()) != null) {
                 sendInfo(ctrlMsgTakePhotoBean);
             }
             waitNewData();

@@ -28,6 +28,7 @@ public class CmdUpPlatFormMsgInfoAck extends CmdHeadSubBizWithoutCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.infoId = channelBuffer.readInt();
 	}
 
 	@Override

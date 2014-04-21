@@ -25,6 +25,7 @@ import org.jboss.netty.buffer.ChannelBuffer;
  *
  */
 public class CmdDownWarnMsgUrgeTodoReq extends CmdHeadSubBizWithCar {
+	
 	private byte warnSrc;		 	// 报警信息来源
 	private short warnType;		 	// 报警类型
 	private long warnTime;		 	// 报警时间
@@ -34,8 +35,6 @@ public class CmdDownWarnMsgUrgeTodoReq extends CmdHeadSubBizWithCar {
 	private byte [] superVisor;		// 督办人
 	private byte [] superVisorTel;  // 督办联系电话
 	private byte [] superVisorEmail;// 督办联系电子邮件
-	
-	
 	
 	public CmdDownWarnMsgUrgeTodoReq() {
 		superVisor = new byte[16];
@@ -59,7 +58,15 @@ public class CmdDownWarnMsgUrgeTodoReq extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-		
+		channelBuffer.writeByte(this.warnSrc);
+		channelBuffer.writeShort(this.warnType);
+		channelBuffer.writeLong(this.warnTime);
+		channelBuffer.writeInt(this.supervisionId);
+		channelBuffer.writeLong(this.supervisionEndTime);
+		channelBuffer.writeByte(this.supervisionLevel);
+		channelBuffer.writeBytes(this.superVisor);
+		channelBuffer.writeBytes(this.superVisorTel);
+		channelBuffer.writeBytes(this.superVisorEmail);
 	}
 
 	@Override

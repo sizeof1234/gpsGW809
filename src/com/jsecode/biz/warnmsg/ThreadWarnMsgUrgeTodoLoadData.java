@@ -1,6 +1,6 @@
 package com.jsecode.biz.warnmsg;
 
-import com.jsecode.biz.ISendData;
+import com.jsecode.biz.IAddDataToQueue;
 import com.jsecode.bean.warnmsg.WarnMsgUrgeTodoReqBean;
 
 import java.util.List;
@@ -20,10 +20,10 @@ import java.util.concurrent.CountDownLatch;
  * 修改备注：
  */
 public class ThreadWarnMsgUrgeTodoLoadData implements Runnable {
-    private ISendData<WarnMsgUrgeTodoReqBean> sendData;
+    private IAddDataToQueue<WarnMsgUrgeTodoReqBean> sendData;
     private CountDownLatch dataLoadSignal;
 
-    public ThreadWarnMsgUrgeTodoLoadData(ISendData<WarnMsgUrgeTodoReqBean> sendData, CountDownLatch dataLoadSignal) {
+    public ThreadWarnMsgUrgeTodoLoadData(IAddDataToQueue<WarnMsgUrgeTodoReqBean> sendData, CountDownLatch dataLoadSignal) {
         this.sendData = sendData;
         this.dataLoadSignal = dataLoadSignal;
     }

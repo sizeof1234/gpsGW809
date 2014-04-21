@@ -30,7 +30,7 @@ public class ThreadWarnMsgUrgeTodoSendData extends AbstractThreadSendData<WarnMs
     public void run() {
         WarnMsgUrgeTodoReqBean warnMsgUrgeTodoReqBean = null;
         while (!isInterrupted()) {
-            while ((warnMsgUrgeTodoReqBean = queue.poll()) != null) {
+            while ((warnMsgUrgeTodoReqBean = getQueuePollData()) != null) {
                 sendInfo(warnMsgUrgeTodoReqBean);
             }
             waitNewData();

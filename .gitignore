@@ -1,9 +1,8 @@
-*.class
-
-# Package Files #
-*.war
-*.ear
-
-# log
-data
-data*
+/bin
+/log
+.classpath
+*.bak
+.settings/
+target/
+dist/
+src/log4j.properties

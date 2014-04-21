@@ -60,7 +60,14 @@ public class CmdDownCtrlMsgEmergencyMonitoringReq extends CmdHeadSubBizWithCar {
 
     @Override
     protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-
+    	channelBuffer.writeBytes(this.authenicationCode);
+    	channelBuffer.writeBytes(this.accessPointName);
+    	channelBuffer.writeBytes(this.userName);
+    	channelBuffer.writeBytes(this.password);
+    	channelBuffer.writeBytes(this.serverIp);
+    	channelBuffer.writeShort(this.tcpPort);
+    	channelBuffer.writeShort(this.udpPort);
+    	channelBuffer.writeLong(this.endTime);
     }
 
 	@Override
@@ -103,7 +110,9 @@ public class CmdDownCtrlMsgEmergencyMonitoringReq extends CmdHeadSubBizWithCar {
     }
 
     public void setPassword(byte[] password) {
-        this.password = password;
+    	if (isByteArraySameSize(this.password, password)) {
+    		this.password = password;
+    	}
     }
 
     public byte[] getServerIp() {

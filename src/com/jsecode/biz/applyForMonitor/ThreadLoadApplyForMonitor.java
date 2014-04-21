@@ -8,17 +8,17 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import com.jsecode.bean.IApplyForMonitorBean;
-import com.jsecode.biz.ISendData;
+import com.jsecode.biz.IAddDataToQueue;
 
 /**
  * 定时获取实时申请/取消交换车辆定位信息请求信息
  */
 public class ThreadLoadApplyForMonitor implements Runnable {
 	
-	private ISendData<IApplyForMonitorBean> sendApplyForMonitor;
+	private IAddDataToQueue<IApplyForMonitorBean> sendApplyForMonitor;
 	private CountDownLatch dataLoadSignal;
 
-	public ThreadLoadApplyForMonitor(ISendData<IApplyForMonitorBean> sendApplyForMonitor, CountDownLatch dataLoadSignal) {
+	public ThreadLoadApplyForMonitor(IAddDataToQueue<IApplyForMonitorBean> sendApplyForMonitor, CountDownLatch dataLoadSignal) {
 		this.sendApplyForMonitor = sendApplyForMonitor;
 		this.dataLoadSignal = dataLoadSignal;
 	}

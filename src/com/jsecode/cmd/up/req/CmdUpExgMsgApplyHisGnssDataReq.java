@@ -31,6 +31,8 @@ public class CmdUpExgMsgApplyHisGnssDataReq extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.startTime = channelBuffer.readLong();
+		this.endTime = channelBuffer.readLong();
 	}
 
 	@Override

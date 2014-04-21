@@ -1,6 +1,6 @@
 package com.jsecode.biz.ctrlmsg;
 
-import com.jsecode.biz.ISendData;
+import com.jsecode.biz.IAddDataToQueue;
 import com.jsecode.bean.ctrlmsg.CtrlMsgMonitorVehicleBean;
 
 import java.util.List;
@@ -20,9 +20,9 @@ import java.util.concurrent.CountDownLatch;
  * 修改备注：
  */
 public class ThreadLoadCtrlMsgMonitorVehicle  implements Runnable{
-    private ISendData<CtrlMsgMonitorVehicleBean> sendData;
+    private IAddDataToQueue<CtrlMsgMonitorVehicleBean> sendData;
     private CountDownLatch dataLoadSignal;
-    public ThreadLoadCtrlMsgMonitorVehicle(ISendData<CtrlMsgMonitorVehicleBean> sendData,CountDownLatch dataLoadSignal){
+    public ThreadLoadCtrlMsgMonitorVehicle(IAddDataToQueue<CtrlMsgMonitorVehicleBean> sendData,CountDownLatch dataLoadSignal){
         this.sendData=sendData;
         this.dataLoadSignal=dataLoadSignal;
     }

@@ -29,7 +29,7 @@ public class ThreadSendApplyForMonitor extends AbstractThreadSendData<IApplyForM
 	public void run() {
 		IApplyForMonitorBean applyForMonitorBean = null;
 		while (!isInterrupted()) {
-			while ((applyForMonitorBean = queue.poll()) != null) {
+			while ((applyForMonitorBean = getQueuePollData()) != null) {
 				if (applyForMonitorBean instanceof ApplyForMonitorStartupBean) {
 					sendApplyForMonitorStartup((ApplyForMonitorStartupBean)applyForMonitorBean);
 				} else if (applyForMonitorBean instanceof ApplyForMonitorEndBean) {

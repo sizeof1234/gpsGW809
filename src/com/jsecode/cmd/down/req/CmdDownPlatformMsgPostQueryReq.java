@@ -30,12 +30,10 @@ public class CmdDownPlatformMsgPostQueryReq extends CmdHeadSubBizWithoutCar {
     public CmdDownPlatformMsgPostQueryReq() {
         objectId = new byte[12];
         infoContent = ZERO_BYTES;
-
     }
 
     @Override
     protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
-
         this.objectType = channelBuffer.readByte();
         channelBuffer.readBytes(objectId);
         this.infoId = channelBuffer.readInt();
@@ -49,7 +47,11 @@ public class CmdDownPlatformMsgPostQueryReq extends CmdHeadSubBizWithoutCar {
 
     @Override
     protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-
+    	channelBuffer.writeByte(this.objectType);
+    	channelBuffer.writeBytes(this.objectId);
+    	channelBuffer.writeInt(this.infoId);
+    	channelBuffer.writeInt(this.infoLength);
+    	channelBuffer.writeBytes(this.infoContent);
     }
 
     @Override
@@ -75,7 +77,9 @@ public class CmdDownPlatformMsgPostQueryReq extends CmdHeadSubBizWithoutCar {
     }
 
     public void setObjectId(byte[] objectId) {
-        this.objectId = objectId;
+    	if (isByteArraySameSize(this.objectId, objectId)) {
+    		this.objectId = objectId;
+    	}
     }
 
     public int getInfoId() {
@@ -90,17 +94,14 @@ public class CmdDownPlatformMsgPostQueryReq extends CmdHeadSubBizWithoutCar {
         return infoLength;
     }
 
-    public void setInfoLength(int infoLength) {
-        this.infoLength = infoLength;
-    }
-
     public byte[] getInfoContent() {
         return infoContent;
     }
 
     public void setInfoContent(byte[] infoContent) {
-        if (isByteArraySameSize(this.infoContent, infoContent)) {
+        if (infoContent != null) {
             this.infoContent = infoContent;
+            this.infoLength = this.infoContent.length;
         }
     }
 }

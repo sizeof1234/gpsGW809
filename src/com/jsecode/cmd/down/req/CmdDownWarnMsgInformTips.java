@@ -25,11 +25,13 @@ import org.jboss.netty.buffer.ChannelBuffer;
  *
  */
 public class CmdDownWarnMsgInformTips extends CmdHeadSubBizWithCar {
+	
 	private byte warnSrc;		 	// 报警信息来源
 	private short warnType;		 	// 报警类型
 	private int warnTime;		 	// 报警时间
 	private int warnLength;   		// 报警信息长度
 	private byte [] warnContent;	// 报警信息内容
+	
 	public CmdDownWarnMsgInformTips() {
         this.warnContent = ZERO_BYTES;
 	}
@@ -48,7 +50,11 @@ public class CmdDownWarnMsgInformTips extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-
+		channelBuffer.writeByte(this.warnSrc);
+		channelBuffer.writeShort(this.warnType);
+		channelBuffer.writeLong(this.warnTime);
+		channelBuffer.writeInt(this.warnLength);
+		channelBuffer.writeBytes(this.warnContent);
 	}
 
 	@Override
@@ -89,17 +95,14 @@ public class CmdDownWarnMsgInformTips extends CmdHeadSubBizWithCar {
         return warnLength;
     }
 
-    public void setWarnLength(int warnLength) {
-        this.warnLength = warnLength;
-    }
-
     public byte[] getWarnContent() {
         return warnContent;
     }
 
     public void setWarnContent(byte[] warnContent) {
-        if (isByteArraySameSize(this.warnContent, warnContent)) {
+        if (warnContent != null) {
             this.warnContent = warnContent;
+            this.warnLength = this.warnContent.length;
         }
     }
 }

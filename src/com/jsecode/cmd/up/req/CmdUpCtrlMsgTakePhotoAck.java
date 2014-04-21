@@ -26,7 +26,7 @@ public class CmdUpCtrlMsgTakePhotoAck extends CmdHeadSubBizWithCar {
 	private byte[] photoData;	//照片数据内容
 
 	public CmdUpCtrlMsgTakePhotoAck() {
-		this.gpsBean = new GpsCmdBean();
+		this.gpsBean = EMPTY_GPS_BEAN;
 		this.photoData = ZERO_BYTES;
 	}
 
@@ -43,6 +43,15 @@ public class CmdUpCtrlMsgTakePhotoAck extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.photoRespFlag = channelBuffer.readByte();
+		this.gpsBean = new GpsCmdBean();
+		this.gpsBean.disposeData(channelBuffer);
+		this.lensId = channelBuffer.readByte();
+		this.photoLen = channelBuffer.readInt();
+		this.sizeType = channelBuffer.readByte();
+		this.photoType = channelBuffer.readByte();
+		this.photoData = new byte[this.getSubDataSize() - 1 - GpsCmdBean.getCmdBeanSize() - 1 - 4 - 1 - 1];
+		channelBuffer.readBytes(this.photoData);
 	}
 
 	@Override
@@ -105,6 +114,12 @@ public class CmdUpCtrlMsgTakePhotoAck extends CmdHeadSubBizWithCar {
 	public void setPhotoData(byte[] photoData) {
 		if (photoData != null) {
 			this.photoData = photoData;
+		}
+	}
+
+	public void setGpsBean(GpsCmdBean gpsBean) {
+		if (gpsBean != null) {
+			this.gpsBean = gpsBean;
 		}
 	}
 

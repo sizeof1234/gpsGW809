@@ -42,7 +42,8 @@ public class CmdDownCtrlMsgTakePhotoReq extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-
+		channelBuffer.writeByte(this.lensId);
+		channelBuffer.writeByte(this.size);
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public class CmdDownCtrlMsgMonitorVehicleReq extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void fillCmdSubBizData(ChannelBuffer channelBuffer) {
-
+		channelBuffer.writeBytes(this.monitorTel);
 	}
 
 	@Override

@@ -35,6 +35,12 @@ public class CmdUpPlatFormMsgPostQueryAck extends CmdHeadSubBizWithoutCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.objectType = channelBuffer.readByte();
+		channelBuffer.readBytes(this.objectId);
+		this.infoId = channelBuffer.readInt();
+		this.infoSize = channelBuffer.readInt();
+		this.infoContent = new byte[this.infoSize];
+		channelBuffer.readBytes(this.infoContent);
 	}
 
 	@Override

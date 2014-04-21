@@ -28,6 +28,7 @@ public class CmdCtrlMsgEmergencyMonitoringAck extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.result = channelBuffer.readByte();
 	}
 
 	@Override

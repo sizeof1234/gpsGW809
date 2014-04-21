@@ -6,9 +6,9 @@ package com.jsecode.biz.gps;
 
 import java.util.Date;
 
-import com.jsecode.biz.ISendData;
+import com.jsecode.biz.IAddDataToQueue;
 
-public interface ISendGpsData<T> extends ISendData<T>{
+public interface ISendGpsData<T> extends IAddDataToQueue<T>{
 	
 	/**
 	 * 获取数据库相关数据最新更新时间

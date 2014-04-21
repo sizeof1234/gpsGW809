@@ -31,6 +31,10 @@ public class CmdUpConnectReq extends CmdHead{
 
 	@Override
 	protected void disposeCmdBody(ChannelBuffer channelBuffer) {
+		this.userId = channelBuffer.readInt();
+		channelBuffer.readBytes(this.userPass);
+		channelBuffer.readBytes(this.downLinkIp);
+		this.downLinkPort = channelBuffer.readShort();
 	}
 	
 	@Override

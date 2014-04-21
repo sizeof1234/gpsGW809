@@ -45,6 +45,7 @@ public class CmdDownConnectResp extends CmdHead {
 	
 	@Override
 	protected void disposeCmdBody(ChannelBuffer channelBuffer) {
+		this.result = channelBuffer.readByte();
 	}
 	
 	@Override

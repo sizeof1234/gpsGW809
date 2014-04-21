@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<tstamp prefix="timestamp.">
+		<format property="isoformat" pattern="yyyy-MM-dd HH:mm:ss" />
+	</tstamp>
+
+	<!--MANIFEST.MF-->
+	<property name="jar.name" value="gpsgw809.jar" />
+	<property name="jar.version" value="${build-version} build ${build-num}" />
+	<property name="build-by" value="Ecode &amp; Technology CO.,LTD." />
+
+	<property name="compile.debuglevel" value="source,lines" />
+	<property name="compile.target" value="1.0" />
+	<property name="compile.source" value="1.0" />
+	<property name="compile.debug" value="true" />
+
+</project>

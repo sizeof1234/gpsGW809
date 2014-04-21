@@ -31,6 +31,9 @@ public class CmdUpExgMsgTakeEWayBillAck extends CmdHeadSubBizWithCar {
 
 	@Override
 	protected void disposeCmdSubBizData(ChannelBuffer channelBuffer) {
+		this.eWayBillDataSize = channelBuffer.readInt();
+		this.eWayBillData = new byte[this.eWayBillDataSize];
+		channelBuffer.readBytes(this.eWayBillData);
 	}
 
 	@Override
